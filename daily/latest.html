@@ -193,6 +193,34 @@ summary { font-weight: 700; cursor: pointer; }
 <h2>今日の深掘り候補</h2>
 <p><strong>Laravel一覧APIのN+1改善を、クエリログで定量比較して再現可能な手順にする</strong></p>
 
+
+<script>
+(function(){
+  function copyText(text){
+    try { navigator.clipboard && navigator.clipboard.writeText(text); } catch(e) {}
+  }
+  document.querySelectorAll('details').forEach(function(d){
+    if (d.querySelector('.ask-block')) return;
+    var topic = (d.querySelector('summary')?.textContent || 'このトピック').trim();
+    var tpl = 'このトピックを初心者向けに噛み砕いて、実務での使い所と次の1アクションを教えて。\n対象: ' + topic;
+    var div = document.createElement('div');
+    div.className = 'ask-block';
+    div.style.marginTop = '10px';
+    div.style.paddingTop = '8px';
+    div.style.borderTop = '1px dashed #d1d5db';
+    div.innerHTML =
+      '<p><strong>質問する</strong></p>' +
+      '<p><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / ' +
+      '<a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a></p>' +
+      '<p><code class="ask-template"></code></p>' +
+      '<p><button type="button" class="copy-btn">テンプレをコピー</button></p>';
+    div.querySelector('.ask-template').textContent = tpl;
+    div.querySelector('.copy-btn').addEventListener('click', function(){ copyText(tpl); });
+    d.appendChild(div);
+  });
+})();
+</script>
+
 </body>
 </html>
 <!-- build-refresh: 2026-02-25T14:27:01Z -->
