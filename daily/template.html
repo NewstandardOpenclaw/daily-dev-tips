@@ -6,137 +6,295 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Daily Dev Tips</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; line-height: 1.7; margin: 2rem auto; max-width: 900px; padding: 0 1rem; }
-    h1, h2 { line-height: 1.3; }
-    details { border: 1px solid #ddd; border-radius: 10px; padding: 0.7rem 0.9rem; margin: 0.8rem 0; background: #fafafa; }
-    summary { font-weight: 700; cursor: pointer; }
-    .date { color: #555; margin-bottom: 1rem; }
-    .toc li { margin: 0.25rem 0; }
-    .section { margin-top: 1.2rem; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.7; margin: 24px; color:#1f2937; }
+    h1,h2 { line-height:1.3; }
+    details { border:1px solid #e5e7eb; border-radius:10px; padding:10px 14px; margin:12px 0; background:#fafafa; }
+    summary { font-weight:700; cursor:pointer; }
+    code, pre { background:#f3f4f6; border-radius:8px; }
+    pre { padding:10px; overflow:auto; }
+    .ask { margin-top:10px; padding-top:8px; border-top:1px dashed #d1d5db; font-size:0.95rem; }
+    .ask a { margin-right:10px; }
+    .copy-btn { border:1px solid #d1d5db; background:#fff; border-radius:8px; padding:4px 8px; cursor:pointer; }
+    .muted { color:#6b7280; }
   </style>
 </head>
 <body>
   <h1>Daily Dev Tips</h1>
-  <p class="date">2026-02-24 (UTC)</p>
+  <p><strong>日付:</strong> 2026-02-24 (UTC)</p>
 
   <h2>目次</h2>
-  <ul class="toc">
-    <li><a href="#laravel">Laravel</a></li>
-    <li><a href="#vue">Vue</a></li>
-    <li><a href="#docker">Docker</a></li>
-    <li><a href="#aws">AWS</a></li>
-    <li><a href="#react">React</a></li>
-    <li><a href="#typescript">TypeScript</a></li>
-    <li><a href="#php-functions">PHP関数</a></li>
-    <li><a href="#array-helpers">配列ヘルパー</a></li>
-    <li><a href="#dash">Dash</a></li>
-    <li><a href="#zapier">Zapier</a></li>
-    <li><a href="#openclaw">OpenClaw</a></li>
+  <ul>
+    <li><a href="#laravel" target="_blank" rel="noopener noreferrer">Laravel（複数サブトピック）</a></li>
+    <li><a href="#laravel-test" target="_blank" rel="noopener noreferrer">Laravelユニットテスト</a></li>
+    <li><a href="#vue" target="_blank" rel="noopener noreferrer">Vue（Vue2中心 + Vue3補足）</a></li>
+    <li><a href="#docker" target="_blank" rel="noopener noreferrer">Docker</a></li>
+    <li><a href="#aws" target="_blank" rel="noopener noreferrer">AWS（開発者向け）</a></li>
+    <li><a href="#react" target="_blank" rel="noopener noreferrer">React（Dayカリキュラム）</a></li>
+    <li><a href="#typescript" target="_blank" rel="noopener noreferrer">TypeScript</a></li>
+    <li><a href="#php-array" target="_blank" rel="noopener noreferrer">PHP関数 / 配列ヘルパー</a></li>
+    <li><a href="#lodash" target="_blank" rel="noopener noreferrer">Lodash</a></li>
+    <li><a href="#htmlcss" target="_blank" rel="noopener noreferrer">HTML & CSS（必須基礎）</a></li>
+    <li><a href="#build" target="_blank" rel="noopener noreferrer">フロントエンドビルド最適化</a></li>
+    <li><a href="#python" target="_blank" rel="noopener noreferrer">Python実用活用</a></li>
+    <li><a href="#zapier-n8n" target="_blank" rel="noopener noreferrer">Zapier + n8n比較</a></li>
+    <li><a href="#openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a></li>
   </ul>
 
-  <div class="section">
-    <details id="laravel">
-      <summary>Laravel</summary>
-      <p>FormRequest の <code>prepareForValidation()</code> で入力を先に正規化すると、バリデーションと後続ロジックが安定します。<br>
-      Controller 内での if 分岐が減り、テストもしやすくなります。</p>
-      <p><strong>なぜ面白い？</strong> 「入力の揺れ」を入口で吸収するだけで、実装全体の複雑さを一段下げられるから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> 既存API 1本で FormRequest を導入し、日付・空文字・trim の正規化を追加して差分を確認。</p>
-      <p>Links: <a href="https://laravel.com/docs/11.x/validation#preparing-input-for-validation">Laravel Validation</a> / <a href="https://laravel.com/docs/11.x/requests">Laravel Requests</a></p>
+  <section id="laravel">
+    <details open>
+      <summary>Laravel（今日のサブトピック: Eloquent基礎 / N+1対策 / index設計）</summary>
+      <ul>
+        <li><strong>概要:</strong> Eloquentの取得設計を意識しつつ、N+1を抑え、DB indexで最終的な速度を作る日。</li>
+        <li><strong>なぜ面白いか:</strong> 「コードの書き方」と「SQL性能」が直結して、改善結果が体感で分かる。</li>
+        <li><strong>現場での使いどころ:</strong> 一覧APIで遅いとき、<code>with()</code> と index の見直しで即効改善。</li>
+        <li><strong>ハマりどころ:</strong> N+1を潰しても、where/sort列にindexがなければ遅いまま。</li>
+        <li><strong>基礎の復習:</strong> <code>belongsTo/hasMany</code> の向きと外部キー名は毎回確認。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 既存一覧1本で「クエリ数」「実行時間」「EXPLAIN」をbefore/after比較。</li>
+      </ul>
+<pre><code>// N+1対策 + 必要列だけ取得
+$posts = Post::query()
+  ->with(['user:id,name'])
+  ->latest()
+  ->paginate(20);
+</code></pre>
+      <p>参考: <a href="https://laravel.com/docs/11.x/eloquent-relationships" target="_blank" rel="noopener noreferrer">Laravel Eloquent Relationships</a> / <a href="https://laravel.com/docs/11.x/pagination" target="_blank" rel="noopener noreferrer">Pagination</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「Laravel一覧のN+1とindexを同時に最適化したい。現状クエリと改善案をレビューして」 <button class="copy-btn" data-copy="Laravel一覧のN+1とindexを同時に最適化したい。現状クエリと改善案をレビューして">コピー</button></div>
     </details>
+  </section>
 
-    <details id="vue">
-      <summary>Vue</summary>
-      <p><code>watchEffect</code> と <code>watch</code> を使い分けると副作用の意図が明確になります。<br>
-      「依存自動追跡（watchEffect）」と「対象を明示（watch）」を分けるのがコツです。</p>
-      <p><strong>なぜ面白い？</strong> リアクティブ設計の“見えない依存”を可視化でき、バグの温床を減らせるから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> 既存コンポーネント1つで watchEffect を watch に置換し、依存を明示化して挙動比較。</p>
-      <p>Links: <a href="https://vuejs.org/guide/essentials/watchers.html">Vue Watchers</a></p>
+  <section id="laravel-test">
+    <details>
+      <summary>Laravelユニットテスト（Day 1: AAA + TestCase基礎）</summary>
+      <ul>
+        <li><strong>概要:</strong> arrange-act-assertの形で、まずは副作用の少ないサービス層からテスト。</li>
+        <li><strong>なぜ面白いか:</strong> 壊れてもすぐ検知できる「安全ネット」ができる。</li>
+        <li><strong>現場ユースケース:</strong> 料金計算ロジックの仕様変更を安全に反映。</li>
+        <li><strong>ハマりどころ:</strong> Feature Testで何でも確認しようとして実行が遅くなる。</li>
+        <li><strong>使い分けメモ:</strong> ドメイン計算=Unit、HTTP/認可/画面遷移=Feature。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 1サービスに正常系2件・異常系1件を追加、CIで実行。</li>
+      </ul>
+      <p>参考: <a href="https://laravel.com/docs/11.x/testing" target="_blank" rel="noopener noreferrer">Laravel Testing</a> / <a href="https://phpunit.de/" target="_blank" rel="noopener noreferrer">PHPUnit</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「このテストはUnit/Featureどちらが適切？理由付きで分割案を出して」 <button class="copy-btn" data-copy="このテストはUnit/Featureどちらが適切？理由付きで分割案を出して">コピー</button></div>
     </details>
+  </section>
 
-    <details id="docker">
-      <summary>Docker</summary>
-      <p>マルチステージビルドで「ビルド環境」と「実行環境」を分離すると、イメージが軽く安全になります。<br>
-      依存キャッシュの層を意識すると CI 時間も短縮できます。</p>
-      <p><strong>なぜ面白い？</strong> 速さ・小ささ・セキュリティを同時に改善できる、費用対効果の高い技術だから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> 1サービスをマルチステージ化し、変更前後でイメージサイズと build 時間を比較。</p>
-      <p>Links: <a href="https://docs.docker.com/build/building/multi-stage/">Docker Multi-stage</a></p>
+  <section id="vue">
+    <details>
+      <summary>Vue（Vue2主軸: computed vs watch）</summary>
+      <ul>
+        <li><strong>概要:</strong> Vue2では「派生値=computed」「副作用=watch」を厳密に分けると保守性が上がる。</li>
+        <li><strong>なぜ面白いか:</strong> 再描画や依存関係の理解が進むとバグが減る。</li>
+        <li><strong>現場での使いどころ:</strong> 入力フォームで表示加工はcomputed、API再取得はwatch。</li>
+        <li><strong>ハマりどころ:</strong> watchで状態を書き換え続けて無限ループ化。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 既存watchを1つcomputedへ置換して差分確認。</li>
+        <li><strong>Vue3ならどう書くか:</strong> <code>computed()</code> と <code>watch()</code> をComposition APIで同じ責務分離にする。</li>
+      </ul>
+      <p>参考: <a href="https://v2.vuejs.org/v2/guide/computed.html" target="_blank" rel="noopener noreferrer">Vue2 Computed & Watch</a> / <a href="https://vuejs.org/guide/essentials/computed.html" target="_blank" rel="noopener noreferrer">Vue3 Computed</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「このVue2コードでwatch乱用を直したい。computed中心のリファクタ案をください」 <button class="copy-btn" data-copy="このVue2コードでwatch乱用を直したい。computed中心のリファクタ案をください">コピー</button></div>
     </details>
+  </section>
 
-    <details id="aws">
-      <summary>AWS</summary>
-      <p>CloudWatch ではメトリクス単体より、Alarm と通知ルート（SNS/ChatOps）までセットで設計すると運用が回ります。<br>
-      まずは「5xx」「レイテンシ」「DLQ滞留」など失敗系を優先監視。</p>
-      <p><strong>なぜ面白い？</strong> 障害の“検知→連絡→初動”を自動化でき、復旧スピードが大きく変わるから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> 既存1システムで最重要アラームを1つ作成し、テスト通知まで通す。</p>
-      <p>Links: <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html">CloudWatch Alarms</a></p>
+  <section id="docker">
+    <details>
+      <summary>Docker（開発環境の再現性を上げる）</summary>
+      <ul>
+        <li><strong>概要:</strong> Dockerfileを「変更が少ない層→多い層」の順にするとビルドが速くなる。</li>
+        <li><strong>なぜ面白いか:</strong> 環境差分バグが減り、オンボーディングも短縮。</li>
+        <li><strong>現場での使いどころ:</strong> PHP + Node混在プロジェクトの統一開発環境。</li>
+        <li><strong>ハマりどころ:</strong> <code>COPY . .</code> を早い段で実行してキャッシュが毎回無効化。</li>
+        <li><strong>今日の実践ミニ課題:</strong> DockerfileのCOPY順を見直してビルド時間を計測。</li>
+        <li><strong>補足:</strong> 開発時はvolume、CIは再現性重視で固定イメージタグ。</li>
+      </ul>
+      <p>参考: <a href="https://docs.docker.com/build/cache/" target="_blank" rel="noopener noreferrer">Docker Build Cache</a> / <a href="https://docs.docker.com/compose/" target="_blank" rel="noopener noreferrer">Docker Compose</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「このDockerfileのレイヤー順を最適化して、ビルド時間短縮案を出して」 <button class="copy-btn" data-copy="このDockerfileのレイヤー順を最適化して、ビルド時間短縮案を出して">コピー</button></div>
     </details>
+  </section>
 
-    <details id="react">
-      <summary>React</summary>
-      <p>派生データを <code>useEffect</code> で state 化せず、描画中に計算する設計へ寄せるとバグが減ります。<br>
-      Effect は外部同期（API・DOM・購読）に限定するのが基本です。</p>
-      <p><strong>なぜ面白い？</strong> state の重複を消すだけで再レンダリング設計がシンプルになり、保守性が上がるから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> 1コンポーネントで「Effectで作る派生state」を削除し、計算プロパティ化する。</p>
-      <p>Links: <a href="https://react.dev/learn/you-might-not-need-an-effect">You Might Not Need an Effect</a></p>
+  <section id="aws">
+    <details>
+      <summary>AWS（Day 1: IAMとVPCの土台）</summary>
+      <ul>
+        <li><strong>概要:</strong> まずIAM最小権限とVPCネットワーク境界を理解すると、後のEC2/ECS/Lambdaが楽。</li>
+        <li><strong>なぜ面白いか:</strong> セキュリティと開発速度のバランス感覚が身につく。</li>
+        <li><strong>現場での使いどころ:</strong> 新規API基盤の初期構築時に「公開/非公開サブネット」を分離。</li>
+        <li><strong>ハマりどころ:</strong> まずAdmin権限で進めて後で絞る、が定着して事故る。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 開発者ロール1つ作り、不要なワイルドカード権限を1つ削る。</li>
+        <li><strong>次回予告:</strong> EC2/ECS/Lambdaの選定基準を実務目線で比較。</li>
+      </ul>
+      <p>参考: <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html" target="_blank" rel="noopener noreferrer">IAM User Guide</a> / <a href="https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html" target="_blank" rel="noopener noreferrer">Amazon VPC</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「この構成でIAM最小権限にするには何を削るべき？運用で困らない範囲で提案して」 <button class="copy-btn" data-copy="この構成でIAM最小権限にするには何を削るべき？運用で困らない範囲で提案して">コピー</button></div>
     </details>
+  </section>
 
-    <details id="typescript">
-      <summary>TypeScript</summary>
-      <p>判別可能ユニオン（discriminated union）を使うと、条件分岐で型安全な状態管理ができます。<br>
-      <code>switch</code> + exhaustive check を入れると未対応ケースをコンパイル時に検知できます。</p>
-      <p><strong>なぜ面白い？</strong> 仕様変更時に「漏れ」を型が教えてくれるので、実装の安心感が段違いだから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> APIレスポンス型を union 化し、<code>never</code> を使った網羅チェックを1箇所追加。</p>
-      <p>Links: <a href="https://www.typescriptlang.org/docs/handbook/unions-and-intersections.html">TS Unions</a> / <a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html">TS Narrowing</a></p>
+  <section id="react">
+    <details>
+      <summary>React（Day 1: コンポーネントとProps）</summary>
+      <ul>
+        <li><strong>概要:</strong> UIを小さく分け、親→子へpropsでデータを渡す基本を固める。</li>
+        <li><strong>なぜ面白いか:</strong> 再利用可能な部品設計がそのまま開発効率につながる。</li>
+        <li><strong>現場での使いどころ:</strong> カードUI/ボタンUIなど共通部品化。</li>
+        <li><strong>ハマりどころ:</strong> なんでも1コンポーネントに詰めて責務が崩れる。</li>
+        <li><strong>復習:</strong> JSXは「見た目 + JS式」を混ぜられるテンプレート。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 既存画面から「再利用できる部品」を2つ切り出す。</li>
+      </ul>
+      <p>参考: <a href="https://react.dev/learn/your-first-component" target="_blank" rel="noopener noreferrer">React Components</a> / <a href="https://react.dev/learn/passing-props-to-a-component" target="_blank" rel="noopener noreferrer">Passing Props</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「このReactコードを責務分割したい。props設計込みで改善して」 <button class="copy-btn" data-copy="このReactコードを責務分割したい。props設計込みで改善して">コピー</button></div>
     </details>
+  </section>
 
-    <details id="php-functions">
-      <summary>PHP関数</summary>
-      <p><code>array_reduce</code> は集計ロジックを1パスにまとめられる反面、可読性が下がることがあります。<br>
-      キー付き連想配列の集約では <code>foreach</code> のほうが明快な場面も多いです。</p>
-      <p><strong>なぜ面白い？</strong> “関数型っぽさ”と“チーム可読性”のバランス感覚を鍛えられるから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> 同じ集計を reduce / foreach の2実装で書き、可読性と実行時間を比較。</p>
-      <p>Links: <a href="https://www.php.net/manual/ja/function.array-reduce.php">array_reduce</a></p>
+  <section id="typescript">
+    <details>
+      <summary>TypeScript（型で仕様を固定する）</summary>
+      <ul>
+        <li><strong>概要:</strong> interface/typeで入出力契約を先に固定するとレビューが速くなる。</li>
+        <li><strong>なぜ面白いか:</strong> 実行前にバグを減らせる「設計ツール」になる。</li>
+        <li><strong>現場での使いどころ:</strong> APIレスポンスの型定義とUI層の境界管理。</li>
+        <li><strong>ハマりどころ:</strong> <code>any</code> で逃げると将来の不具合コストが増える。</li>
+        <li><strong>今日の実践ミニ課題:</strong> anyを3箇所unknown+型ガードに置換。</li>
+        <li><strong>コツ:</strong> まず「外部入力」を厳密化すると効果が高い。</li>
+      </ul>
+      <p>参考: <a href="https://www.typescriptlang.org/docs/" target="_blank" rel="noopener noreferrer">TypeScript Docs</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「この型定義を安全性を落とさず簡潔にしたい。改善案を示して」 <button class="copy-btn" data-copy="この型定義を安全性を落とさず簡潔にしたい。改善案を示して">コピー</button></div>
     </details>
+  </section>
 
-    <details id="array-helpers">
-      <summary>配列ヘルパー</summary>
-      <p>Laravel の <code>data_get()</code> は配列・オブジェクト混在データの深い参照を統一できます。<br>
-      ワイルドカード指定で複数要素を一気に抜き出せるのも便利です。</p>
-      <p><strong>なぜ面白い？</strong> ネストの深いデータ処理で null チェック地獄から抜けやすくなるから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> APIレスポンス整形処理を data_get ベースに置換し、例外パターンを1つ追加テスト。</p>
-      <p>Links: <a href="https://laravel.com/docs/11.x/helpers#method-data-get">data_get Helper</a></p>
-    </details>
+  <section id="php-array">
+    <details>
+      <summary>PHP関数 / 配列ヘルパー（素のPHP vs Laravel）</summary>
+      <ul>
+        <li><strong>概要:</strong> <code>array_map/filter/reduce</code> を押さえつつ、Laravel Collectionへ橋渡し。</li>
+        <li><strong>なぜ面白いか:</strong> データ加工が読みやすくなり、意図がコードに残る。</li>
+        <li><strong>現場での使いどころ:</strong> API整形、CSV変換、画面表示用フォーマット。</li>
+        <li><strong>比較:</strong> 素のPHPは軽量、Laravel版はチェーン可読性とユーティリティが強い。</li>
+      </ul>
+<pre><code>// 素のPHP
+$names = array_map(fn($u) => $u['name'], $users);
 
-    <details id="dash">
-      <summary>Dash</summary>
-      <p>Dash では callback の Input/State の切り分けがパフォーマンスに直結します。<br>
-      頻繁に変わる値は Input、トリガー不要の補助値は State に寄せるのが基本です。</p>
-      <p><strong>なぜ面白い？</strong> 同じUIでも callback 設計だけで体感速度が目に見えて変わるから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> 既存 callback 1本で Input を見直し、不要な再実行回数を計測して記録。</p>
-      <p>Links: <a href="https://dash.plotly.com/basic-callbacks">Dash Basic Callbacks</a></p>
+// Laravel Collection
+$names = collect($users)->pluck('name')->all();
+</code></pre>
+      <ul>
+        <li><strong>今日の実践ミニ課題:</strong> 既存array_map処理1つをCollectionへ置換して可読性比較。</li>
+      </ul>
+      <p>参考: <a href="https://www.php.net/manual/ja/ref.array.php" target="_blank" rel="noopener noreferrer">PHP配列関数</a> / <a href="https://laravel.com/docs/11.x/collections" target="_blank" rel="noopener noreferrer">Laravel Collections</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「この配列処理を素のPHP版とLaravel Collection版で比較して最適案を教えて」 <button class="copy-btn" data-copy="この配列処理を素のPHP版とLaravel Collection版で比較して最適案を教えて">コピー</button></div>
     </details>
+  </section>
 
-    <details id="zapier">
-      <summary>Zapier</summary>
-      <p>Zap の先頭に Filter / Paths を置くと、不要処理や誤通知を初期段階で止められます。<br>
-      タスク消費を抑えつつ、運用時のノイズも減らせます。</p>
-      <p><strong>なぜ面白い？</strong> 自動化は“作る”より“誤作動させない”設計が価値を生むから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> よく使う Zap 1本に Filter を追加し、1週間分の無駄実行削減見込みを試算。</p>
-      <p>Links: <a href="https://help.zapier.com/hc/en-us/articles/8496288690317-Use-filters-in-Zaps">Zapier Filters</a></p>
+  <section id="lodash">
+    <details>
+      <summary>Lodash（ユーティリティの使い分け）</summary>
+      <ul>
+        <li><strong>概要:</strong> <code>debounce</code> / <code>throttle</code> / <code>groupBy</code> を軸に実用重視で覚える。</li>
+        <li><strong>なぜ面白いか:</strong> 小さな工夫でUI体験や処理コストが改善する。</li>
+        <li><strong>現場での使いどころ:</strong> 検索入力のAPI連打防止に<code>debounce</code>。</li>
+        <li><strong>ハマりどころ:</strong> import方法次第でバンドルが肥大化。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 全量importをやめ、関数単位importへ変更。</li>
+        <li><strong>補足:</strong> ネイティブJSで代替可能な処理は置き換えも検討。</li>
+      </ul>
+      <p>参考: <a href="https://lodash.com/docs/" target="_blank" rel="noopener noreferrer">Lodash Docs</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「このLodash利用はネイティブJSで置換可能？性能と可読性で比較して」 <button class="copy-btn" data-copy="このLodash利用はネイティブJSで置換可能？性能と可読性で比較して">コピー</button></div>
     </details>
+  </section>
 
-    <details id="openclaw">
-      <summary>OpenClaw</summary>
-      <p>定期通知は Cron と Heartbeat を役割分担すると運用が安定します。<br>
-      「時刻厳守」は Cron、「まとめて軽く確認」は Heartbeat が向いています。</p>
-      <p><strong>なぜ面白い？</strong> 自動化の粒度を設計するだけで、通知疲れと見逃しの両方を減らせるから。</p>
-      <p><strong>今日の実践ミニ課題（You）:</strong> 監視タスクを1つ選び、Cron/Heartbeatどちらが適切か判断理由をメモ化。</p>
-      <p>Links: <a href="https://docs.openclaw.ai">OpenClaw Docs</a> / <a href="https://github.com/openclaw/openclaw">OpenClaw GitHub</a></p>
+  <section id="htmlcss">
+    <details>
+      <summary>HTML & CSS（Day 1: セマンティックHTML + ボックスモデル）</summary>
+      <ul>
+        <li><strong>概要:</strong> <code>header/main/section/article</code> を意識し、余白はボックスモデルで管理。</li>
+        <li><strong>なぜ面白いか:</strong> 可読性・アクセシビリティ・SEOが同時に良くなる。</li>
+        <li><strong>現場での使いどころ:</strong> LPや管理画面の土台構造を崩れにくく作る。</li>
+        <li><strong>よくあるハマりどころ:</strong> width計算時にpadding/borderを見落としレイアウト崩壊。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 1ページでdiv地獄をセマンティックタグへ置換。</li>
+        <li><strong>次の段階:</strong> display/position/flex/gridへ進む前提をここで固める。</li>
+      </ul>
+      <p>参考: <a href="https://developer.mozilla.org/ja/docs/Glossary/Semantics" target="_blank" rel="noopener noreferrer">MDN セマンティクス</a> / <a href="https://developer.mozilla.org/ja/docs/Learn/CSS/Building_blocks/The_box_model" target="_blank" rel="noopener noreferrer">MDN ボックスモデル</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「このHTML構造をセマンティックに直して、必要なCSS最小構成を提案して」 <button class="copy-btn" data-copy="このHTML構造をセマンティックに直して、必要なCSS最小構成を提案して">コピー</button></div>
     </details>
-  </div>
+  </section>
+
+  <section id="build">
+    <details>
+      <summary>フロントエンドビルド最適化（dev起動遅延の切り分け）</summary>
+      <ul>
+        <li><strong>概要:</strong> webpack/Vite/npm/yarnの遅さは「依存解決」「キャッシュ」「source map」「watch」のどこかに出る。</li>
+        <li><strong>なぜ面白いか:</strong> 開発待ち時間を減らすと集中力のロスが激減。</li>
+        <li><strong>現場での使いどころ:</strong> 大規模フロントで起動2分→30秒台へ改善。</li>
+        <li><strong>ハマりどころ:</strong> node_modules肥大化・不要な監視対象・重いsource map設定。</li>
+        <li><strong>計測方法:</strong> <code>time npm run dev</code> を3回測定し平均、変更前後を同条件比較。</li>
+        <li><strong>今日の実践ミニ課題:</strong> watch対象除外・cache有効化・source map設定を1つずつ切替えて差分測定。</li>
+      </ul>
+      <p>参考: <a href="https://vite.dev/guide/performance.html" target="_blank" rel="noopener noreferrer">Vite Performance</a> / <a href="https://webpack.js.org/guides/build-performance/" target="_blank" rel="noopener noreferrer">webpack Build Performance</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「dev起動が遅い原因を切り分けたい。測定ログを見て優先順位付き改善案を出して」 <button class="copy-btn" data-copy="dev起動が遅い原因を切り分けたい。測定ログを見て優先順位付き改善案を出して">コピー</button></div>
+    </details>
+  </section>
+
+  <section id="python">
+    <details>
+      <summary>Python実用活用（Day 1: CSV/JSON加工の自動化）</summary>
+      <ul>
+        <li><strong>概要:</strong> 日常の手作業整形（CSV→JSONなど）を最小スクリプトで自動化。</li>
+        <li><strong>なぜ面白いか:</strong> 10分作業の繰り返しをゼロにできる。</li>
+        <li><strong>実務ユースケース:</strong> 営業CSVをAPI投入用JSONへ変換して夜間バッチに渡す。</li>
+        <li><strong>ハマりどころ:</strong> 文字コード・改行コード・空値の扱いでデータ欠損。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 手元CSV1つをJSON化し、件数一致チェックを追加。</li>
+      </ul>
+<pre><code>import csv, json
+rows = []
+with open('input.csv', newline='', encoding='utf-8') as f:
+    for r in csv.DictReader(f):
+        rows.append({'id': r['id'], 'name': r['name'].strip()})
+with open('out.json', 'w', encoding='utf-8') as f:
+    json.dump(rows, f, ensure_ascii=False, indent=2)
+</code></pre>
+      <p>参考: <a href="https://docs.python.org/3/library/csv.html" target="_blank" rel="noopener noreferrer">Python csv</a> / <a href="https://docs.python.org/3/library/json.html" target="_blank" rel="noopener noreferrer">Python json</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「このCSV変換スクリプトを業務運用向けに堅牢化して（エラー処理/ログ付き）」 <button class="copy-btn" data-copy="このCSV変換スクリプトを業務運用向けに堅牢化して（エラー処理/ログ付き）">コピー</button></div>
+    </details>
+  </section>
+
+  <section id="zapier-n8n">
+    <details>
+      <summary>Zapier + n8n比較（強み / 向き不向き / ユースケース）</summary>
+      <ul>
+        <li><strong>比較:</strong> Zapierは導入最速・SaaS連携豊富、n8nは自己ホストや複雑分岐に強い。</li>
+        <li><strong>向いている場面:</strong> 非エンジニア主導の定型連携=Zapier、開発者主導で柔軟制御=n8n。</li>
+        <li><strong>ユースケース1:</strong> フォーム送信→Slack通知→Notion登録。</li>
+        <li><strong>ユースケース2:</strong> GitHub Issue作成→担当者アサイン→期限リマインド。</li>
+        <li><strong>ユースケース3:</strong> EC注文→在庫更新→会計SaaSへ連携。</li>
+        <li><strong>ユースケース4:</strong> 問い合わせメール→要約→チケット化。</li>
+        <li><strong>ユースケース5:</strong> 毎朝KPI収集→レポート生成→Discord配信。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 同じワークフローをZapier/n8n両方で試し工数比較。</li>
+      </ul>
+      <p>参考: <a href="https://zapier.com/apps" target="_blank" rel="noopener noreferrer">Zapier Apps</a> / <a href="https://docs.n8n.io/" target="_blank" rel="noopener noreferrer">n8n Docs</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「この業務フローはZapierとn8nどちら向き？運用コスト込みで判断して」 <button class="copy-btn" data-copy="この業務フローはZapierとn8nどちら向き？運用コスト込みで判断して">コピー</button></div>
+    </details>
+  </section>
+
+  <section id="openclaw">
+    <details>
+      <summary>OpenClaw（実運用の基本）</summary>
+      <ul>
+        <li><strong>概要:</strong> セッション管理・sub-agent・cronを使い分けると運用が安定。</li>
+        <li><strong>なぜ面白いか:</strong> ルーチン作業の自動化と人間の判断を両立しやすい。</li>
+        <li><strong>現場での使いどころ:</strong> 定時レポート生成、障害時の即時通知、タスク分担。</li>
+        <li><strong>ハマりどころ:</strong> 監視頻度を上げすぎて通知疲れになる。</li>
+        <li><strong>今日の実践ミニ課題:</strong> 1つの定型作業をcron化し、通知文を短く最適化。</li>
+        <li><strong>補足:</strong> まずは「重要通知だけ即時、他は日次まとめ」が無難。</li>
+      </ul>
+      <p>参考: <a href="https://docs.openclaw.ai" target="_blank" rel="noopener noreferrer">OpenClaw Docs</a> / <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw GitHub</a></p>
+      <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ: 「OpenClawでこの運用を自動化したい。cron/heartbeat/sub-agentの最適構成を提案して」 <button class="copy-btn" data-copy="OpenClawでこの運用を自動化したい。cron/heartbeat/sub-agentの最適構成を提案して">コピー</button></div>
+    </details>
+  </section>
 
   <h2>今日の深掘り候補</h2>
-  <p><strong>TypeScript の判別可能ユニオン + React reducer</strong><br>
-  画面状態（idle/loading/success/error）を union で定義し、未対応分岐をコンパイルエラーにする設計を試してみよう。</p>
+  <p><strong>「Laravel一覧API高速化（N+1 + index + pagination最適化）を30分で検証する」</strong></p>
+
+  <script>
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(btn.dataset.copy || ''); } catch (e) {}
+      });
+    });
+  </script>
 </body>
 </html>
