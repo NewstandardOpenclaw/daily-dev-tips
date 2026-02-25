@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>毎朝の学習Tips - 2026-02-25</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121a33;
+      --text: #e9eefc;
+      --muted: #a9b4d0;
+      --accent: #7aa2ff;
+      --accent2: #55d6be;
+      --line: #243054;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: linear-gradient(180deg, #0b1020 0%, #0a1328 100%);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 24px;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1 { font-size: 1.8rem; margin: 0 0 8px; }
+    .lead { color: var(--muted); margin: 0 0 20px; }
+    .topic {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      margin: 0 0 16px;
+    }
+    h2 { margin: 0 0 10px; font-size: 1.25rem; color: var(--accent2); }
+    h3 { margin: 12px 0 6px; font-size: 1rem; color: var(--accent); }
+    ul { margin: 8px 0 8px 1.2em; padding: 0; }
+    code, .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #0a1330;
+      border: 1px solid #22315d;
+      border-radius: 6px;
+      padding: 0.1em 0.4em;
+      color: #e6f0ff;
+    }
+    .ask {
+      margin-top: 14px;
+      border-top: 1px dashed #334578;
+      padding-top: 12px;
+      background: #0e1733;
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .ask-title { font-weight: 700; margin-bottom: 8px; }
+    .links a {
+      display: inline-block;
+      margin-right: 10px;
+      color: #9cc0ff;
+      text-decoration: underline;
+    }
+    .template {
+      width: 100%;
+      min-height: 44px;
+      resize: vertical;
+      border: 1px solid #354a80;
+      background: #0c1530;
+      color: #eef3ff;
+      border-radius: 8px;
+      padding: 8px;
+      margin-top: 8px;
+    }
+    .btn {
+      margin-top: 8px;
+      border: 1px solid #3f5aa3;
+      background: #1a2d63;
+      color: #eff5ff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .footer { color: var(--muted); margin-top: 16px; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌅 毎朝の学習Tips（2026-02-25）</h1>
+    <p class="lead">今日のテーマは「基礎を保ちつつ、実務速度を上げる構成」。各トピックは重複を避け、役割を分けています。</p>
+
+    <section class="topic">
+      <h2>1) Laravel（複数サブトピック）</h2>
+      <h3>今日の焦点: サービス層 + FormRequest + Policyの責務分離</h3>
+      <ul>
+        <li><b>Controllerは薄く:</b> 受け取り・バリデーション結果の受領・レスポンス返却に限定。</li>
+        <li><b>FormRequest:</b> 入力の正規化（<code>prepareForValidation</code>）と検証を一元化。</li>
+        <li><b>Service:</b> トランザクションや複数Repositoryを跨ぐ業務処理を実装。</li>
+        <li><b>Policy:</b> 権限判定の分岐をView/Controllerから剥がす。</li>
+      </ul>
+      <h3>実務ミニ課題</h3>
+      <ul>
+        <li>既存APIの1エンドポイントを「Controller 30行以内」にリファクタ。</li>
+        <li>トランザクション境界をServiceに寄せ、例外時のロールバック挙動を確認。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q1">LaravelでControllerを薄く保ちつつ、Service/FormRequest/Policyの責務分離を段階的に導入する実践手順を教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q1')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>2) Laravelユニットテスト</h2>
+      <h3>今日の焦点: テスト対象の境界を明確化</h3>
+      <ul>
+        <li><b>Unit:</b> 純粋ロジック中心（外部依存はモック）。</li>
+        <li><b>Feature:</b> HTTP/DBを含むふるまい確認。</li>
+        <li><b>命名:</b> <code>it_returns_x_when_y</code> 形式で意図を先に書く。</li>
+      </ul>
+      <h3>実務ミニ課題</h3>
+      <ul>
+        <li>壊れやすい計算ロジックをUnit化し、境界値（0/1/max）を追加。</li>
+        <li>Factory + Seederの重複をヘルパー化してテスト速度を改善。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q2">LaravelのUnitテストで、モック過多を避けつつ保守しやすいテスト設計にするコツを具体例つきで教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q2')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>3) Vue（Vue2中心 + Vue3補足）</h2>
+      <h3>今日の焦点: Vue2のOptions API整理 + Vue3移行の布石</h3>
+      <ul>
+        <li><b>Vue2:</b> <code>computed</code>と<code>watch</code>の役割を分離（導出値 vs 副作用）。</li>
+        <li><b>Vue3補足:</b> Composition APIで関心ごと別に分解（<code>useXxx</code>）。</li>
+        <li><b>移行観点:</b> グローバルMixin依存を減らし、テスト可能性を確保。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q3">Vue2の既存コンポーネントを壊さず、Vue3移行しやすい構造へ段階的に改善する方法を教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q3')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>4) Docker</h2>
+      <h3>今日の焦点: 開発コンテナの再現性</h3>
+      <ul>
+        <li>Dockerfileのレイヤー順を最適化し、ビルドキャッシュを効かせる。</li>
+        <li><code>.dockerignore</code> を適切化して転送量を削減。</li>
+        <li>Composeで依存サービス（DB/Redis）を明示し、オンボーディングを最短化。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q4">Docker開発環境でビルド時間を短縮しつつ、チーム全員で再現性を高める設定のベストプラクティスを教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q4')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>5) AWS（開発者向け基礎→実務）</h2>
+      <h3>今日の焦点: IAM最小権限 + CloudWatch可視化</h3>
+      <ul>
+        <li>基礎: IAMユーザー/ロール/ポリシーの違いを説明できる状態へ。</li>
+        <li>実務: ECS/Lambda/RDSの失敗時に、どのログを見るかを先に決める。</li>
+        <li>コスト: 無駄な常時起動を避け、タグで費用追跡。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q5">AWSで開発者が最初に身につけるべきIAMと監視の実務ポイントを、失敗例ベースで教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q5')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>6) React</h2>
+      <h3>今日の焦点: 状態の置き場所設計</h3>
+      <ul>
+        <li>ローカル状態とグローバル状態を分離。</li>
+        <li>再レンダリング原因をReact DevToolsで可視化。</li>
+        <li>副作用は<code>useEffect</code>依存配列を明示し、曖昧さを排除。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q6">Reactで状態管理をシンプルに保ちながら、パフォーマンス劣化を防ぐ設計パターンを教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q6')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>7) TypeScript</h2>
+      <h3>今日の焦点: 型で仕様を先に固定する</h3>
+      <ul>
+        <li><code>any</code>禁止ルールを段階導入。</li>
+        <li>APIレスポンスは<code>type</code>定義 + ランタイムバリデーション（Zod等）を併用。</li>
+        <li>ユニオン型で「あり得る状態」を列挙して分岐漏れを防ぐ。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q7">TypeScriptで既存JavaScriptコードに無理なく型を導入する段階的戦略を教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q7')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>8) PHP関数</h2>
+      <h3>今日の焦点: 文字列/配列/日付の標準関数を使い切る</h3>
+      <ul>
+        <li><code>array_map</code>/<code>array_filter</code>/<code>array_reduce</code> の適材適所を整理。</li>
+        <li><code>DateTimeImmutable</code> を優先して副作用を防止。</li>
+        <li>独自関数を作る前に標準関数で代替可能か確認。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q8">PHP標準関数を活用して可読性と保守性を上げる書き換え例を、実務コード風に示してください。</textarea>
+        <button class="btn" onclick="copyTemplate('q8')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>9) 配列ヘルパー</h2>
+      <h3>今日の焦点: ネスト配列の安全アクセス</h3>
+      <ul>
+        <li>Laravelの<code>data_get</code>/<code>data_set</code>でnull安全アクセス。</li>
+        <li>欠損キーに対するデフォルト値戦略を統一。</li>
+        <li>変換処理を1関数1責務で小さく保つ。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q9">配列ヘルパーを使ってネストの深いデータ処理を安全に書くパターンを教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q9')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>10) Lodash</h2>
+      <h3>今日の焦点: 高頻度処理の負荷抑制</h3>
+      <ul>
+        <li><code>debounce</code>/<code>throttle</code>の使い分けを明確化。</li>
+        <li><code>cloneDeep</code>乱用を避け、必要最小限の不変更新へ。</li>
+        <li>Tree-shakingを意識してimport粒度を最適化。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q10">Lodashのdebounce/throttleを実務で誤用しないための判断基準を教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q10')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>11) HTML & CSS（必須基礎）</h2>
+      <h3>今日の焦点: セマンティクス + レイアウト基礎</h3>
+      <ul>
+        <li>見た目優先前に、意味のあるタグ（header/main/section/nav）を使う。</li>
+        <li>FlexとGridの役割分担を決める（一次元 vs 二次元）。</li>
+        <li>余白・タイポグラフィのルールを先に定義。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q11">HTML/CSSの基礎を最短で固める練習メニューを、セマンティクスとレイアウト中心で提案してください。</textarea>
+        <button class="btn" onclick="copyTemplate('q11')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>12) フロントエンドビルド最適化（webpack/Vite/npm/yarn）</h2>
+      <h3>今日の焦点: 開発体験と本番性能の両立</h3>
+      <ul>
+        <li>Vite: 開発高速化（HMR）重視。</li>
+        <li>webpack: 複雑要件時のカスタム最適化で活用。</li>
+        <li>依存関係の整理（未使用パッケージ除去・lockfile運用統一）。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q12">webpackからViteへ移行する際のチェックリストと、npm/yarn運用の注意点を教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q12')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>13) Python実用活用</h2>
+      <h3>今日の焦点: 業務自動化の小さな勝利を積む</h3>
+      <ul>
+        <li>CSV整形、ログ解析、API連携など「15分で効く」処理から開始。</li>
+        <li>仮想環境（venv/poetry）で依存汚染を防止。</li>
+        <li>例外処理 + ログ出力を初手で入れて運用可能な形へ。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q13">Pythonで開発者業務を自動化する、すぐ効果が出るスクリプト例を3つ提案してください。</textarea>
+        <button class="btn" onclick="copyTemplate('q13')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>14) Zapier + n8n比較</h2>
+      <h3>今日の焦点: 速度 vs 柔軟性</h3>
+      <ul>
+        <li>Zapier: 非エンジニア連携の初速が速い。</li>
+        <li>n8n: 自己ホストや分岐の自由度が高い。</li>
+        <li>判断軸: セキュリティ要件、運用者スキル、月額コスト。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q14">Zapierとn8nをチーム導入する場合、要件別の選定基準と移行リスクを整理してください。</textarea>
+        <button class="btn" onclick="copyTemplate('q14')">コピー</button>
+      </div>
+    </section>
+
+    <section class="topic">
+      <h2>15) OpenClaw</h2>
+      <h3>今日の焦点: 運用の安定化（再現・監視・安全）</h3>
+      <ul>
+        <li>定常確認: <code>openclaw status</code> で稼働状態を把握。</li>
+        <li>運用整理: heartbeat と cron の使い分けを明文化。</li>
+        <li>安全運用: 外部送信アクションは必ず明示的にログを残す。</li>
+      </ul>
+      <div class="ask">
+        <div class="ask-title">質問する</div>
+        <div class="links">
+          <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a>
+          <a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini</a>
+        </div>
+        <textarea class="template" id="q15">OpenClaw運用でheartbeatとcronをどう設計すると通知疲れを防ぎつつ見落としを減らせるか教えてください。</textarea>
+        <button class="btn" onclick="copyTemplate('q15')">コピー</button>
+      </div>
+    </section>
+
+    <p class="footer">リンクはすべて新しいタブで開きます。コピーボタンはテンプレート文をクリップボードに保存し、通知は表示しません。</p>
+  </div>
+
+  <script>
+    async function copyTemplate(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      try {
+        await navigator.clipboard.writeText(el.value);
+      } catch (_) {
+        const temp = document.createElement('textarea');
+        temp.value = el.value;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      }
+    }
+  </script>
+</body>
+</html>
