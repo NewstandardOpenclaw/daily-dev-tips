@@ -31,6 +31,7 @@
   <section id="laravel">
     <div style="margin: 6px 0 8px;">
       <button class="copy-topic-btn" data-target="laravel">このトピック本文をコピー（プレーンテキスト）</button>
+      <button class="copy-main-btn" data-target="laravel">タイトル〜参考までをコピー</button>
     </div>
     <details open>
       <summary>Laravel（今日のサブトピック: Eloquent N+1対策 / 複合Index設計）</summary>
@@ -56,6 +57,7 @@
   <section id="typescript">
     <div style="margin: 6px 0 8px;">
       <button class="copy-topic-btn" data-target="typescript">このトピック本文をコピー（プレーンテキスト）</button>
+      <button class="copy-main-btn" data-target="typescript">タイトル〜参考までをコピー</button>
     </div>
     <details>
       <summary>TypeScript（Day: 型ガードでunknownを安全に扱う）</summary>
@@ -79,6 +81,7 @@
   <section id="docker">
     <div style="margin: 6px 0 8px;">
       <button class="copy-topic-btn" data-target="docker">このトピック本文をコピー（プレーンテキスト）</button>
+      <button class="copy-main-btn" data-target="docker">タイトル〜参考までをコピー</button>
     </div>
     <details>
       <summary>Docker（Day: マルチステージビルドで本番最適化）</summary>
@@ -133,6 +136,37 @@ COPY --from=build /app/dist /usr/share/nginx/html
           await navigator.clipboard.writeText(text);
           const original = btn.textContent;
           btn.textContent = '本文をコピー済み';
+          setTimeout(() => { btn.textContent = original; }, 1400);
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    });
+
+    document.querySelectorAll('.copy-main-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const targetId = btn.getAttribute('data-target');
+        const section = targetId ? document.getElementById(targetId) : null;
+        if (!section) return;
+
+        const details = section.querySelector('details');
+        if (!details) return;
+
+        const summary = details.querySelector('summary')?.innerText?.trim() || '';
+        const ulText = details.querySelector('ul')?.innerText?.trim() || '';
+        const codeText = details.querySelector('pre code')?.innerText?.trim() || '';
+        const refText = details.querySelector('p')?.innerText?.trim() || '';
+
+        const text = [summary, ulText, codeText, refText]
+          .filter(Boolean)
+          .join('\n\n')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+
+        try {
+          await navigator.clipboard.writeText(text);
+          const original = btn.textContent;
+          btn.textContent = 'タイトル〜参考をコピー済み';
           setTimeout(() => { btn.textContent = original; }, 1400);
         } catch (e) {
           console.error(e);
