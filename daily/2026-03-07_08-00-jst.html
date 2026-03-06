@@ -30,7 +30,7 @@
 
   <section id="laravel">
     <div style="margin: 6px 0 8px;">
-      <button class="copy-section-btn" data-target="laravel">この &lt;section id="laravel"&gt; ブロックをコピー</button>
+      <button class="copy-topic-btn" data-target="laravel">このトピック本文をコピー（プレーンテキスト）</button>
     </div>
     <details open>
       <summary>Laravel（今日のサブトピック: Eloquent N+1対策 / 複合Index設計）</summary>
@@ -54,6 +54,9 @@
   </section>
 
   <section id="typescript">
+    <div style="margin: 6px 0 8px;">
+      <button class="copy-topic-btn" data-target="typescript">このトピック本文をコピー（プレーンテキスト）</button>
+    </div>
     <details>
       <summary>TypeScript（Day: 型ガードでunknownを安全に扱う）</summary>
       <ul>
@@ -74,6 +77,9 @@
   </section>
 
   <section id="docker">
+    <div style="margin: 6px 0 8px;">
+      <button class="copy-topic-btn" data-target="docker">このトピック本文をコピー（プレーンテキスト）</button>
+    </div>
     <details>
       <summary>Docker（Day: マルチステージビルドで本番最適化）</summary>
       <ul>
@@ -112,15 +118,21 @@ COPY --from=build /app/dist /usr/share/nginx/html
       });
     });
 
-    document.querySelectorAll('.copy-section-btn').forEach(btn => {
+    document.querySelectorAll('.copy-topic-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const targetId = btn.getAttribute('data-target');
         const section = targetId ? document.getElementById(targetId) : null;
         if (!section) return;
+
+        const details = section.querySelector('details');
+        const text = (details ? details.innerText : section.innerText)
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+
         try {
-          await navigator.clipboard.writeText(section.outerHTML);
+          await navigator.clipboard.writeText(text);
           const original = btn.textContent;
-          btn.textContent = 'ブロックをコピー済み';
+          btn.textContent = '本文をコピー済み';
           setTimeout(() => { btn.textContent = original; }, 1400);
         } catch (e) {
           console.error(e);
