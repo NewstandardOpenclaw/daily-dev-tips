@@ -440,7 +440,7 @@ with open('out.json', 'w', encoding='utf-8') as f:
             copyContentBtn.addEventListener('click', () => {
                 const clone = details.cloneNode(true);
                 clone.querySelectorAll('button, .ask, summary, p').forEach(el => el.remove()); // p(参照)も除く
-                const text = `【内容共有: ${summaryText.trim()}】\n\n${clone.innerText.trim()}`;
+                const text = `【${summaryText.trim()}】\n\n${clone.innerText.trim()}`;
                 copyToClipboard(text, copyContentBtn);
             });
 
@@ -450,7 +450,7 @@ with open('out.json', 'w', encoding='utf-8') as f:
             copyRefBtn.className = 'copy-btn';
             copyRefBtn.addEventListener('click', () => {
                 const links = Array.from(details.querySelectorAll('p a')).map(a => a.href).join('\n');
-                const text = `【参照資料: ${summaryText.trim()}】\n${links}`;
+                const text = `【${summaryText.trim()}】\n${links}`;
                 copyToClipboard(text, copyRefBtn);
             });
 
