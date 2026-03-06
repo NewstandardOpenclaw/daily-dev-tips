@@ -29,6 +29,9 @@
   </ul>
 
   <section id="laravel">
+    <div style="margin: 6px 0 8px;">
+      <button class="copy-section-btn" data-target="laravel">この &lt;section id="laravel"&gt; ブロックをコピー</button>
+    </div>
     <details open>
       <summary>Laravel（今日のサブトピック: Eloquent N+1対策 / 複合Index設計）</summary>
       <ul>
@@ -103,6 +106,22 @@ COPY --from=build /app/dist /usr/share/nginx/html
           const original = btn.textContent;
           btn.textContent = 'コピー済み';
           setTimeout(() => { btn.textContent = original; }, 1200);
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    });
+
+    document.querySelectorAll('.copy-section-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const targetId = btn.getAttribute('data-target');
+        const section = targetId ? document.getElementById(targetId) : null;
+        if (!section) return;
+        try {
+          await navigator.clipboard.writeText(section.outerHTML);
+          const original = btn.textContent;
+          btn.textContent = 'ブロックをコピー済み';
+          setTimeout(() => { btn.textContent = original; }, 1400);
         } catch (e) {
           console.error(e);
         }
