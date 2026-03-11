@@ -1,302 +1,450 @@
 <!doctype html>
 <html lang="ja">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Daily Dev Tips</title>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Dev Tips</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.7; margin: 24px; color: #1f2937; }
-    h1,h2 { line-height: 1.3; } details { border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 14px; margin: 12px 0; background: #fafafa; }
-    summary { font-weight: 700; cursor: pointer; } .ask { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #d1d5db; font-size: 0.95rem; }
-    .copy-btn { border: 1px solid #d1d5db; background: #fff; border-radius: 8px; padding: 4px 8px; cursor: pointer; } .muted { color:#6b7280; }
+    h1,h2 { line-height: 1.3; }
+    details { border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 14px; margin: 12px 0; background: #fafafa; }
+    summary { font-weight: 700; cursor: pointer; }
+    code,pre { background: #f3f4f6; border-radius: 8px; }
+    pre { padding: 10px; overflow: auto; }
+    .ask { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #d1d5db; font-size: 0.95rem; }
+    .ask a { margin-right: 10px; }
+    .copy-btn { border: 1px solid #d1d5db; background: #fff; border-radius: 8px; padding: 4px 8px; cursor: pointer; }
+    .topic-tools { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+    .tool-btn { border:1px solid #d1d5db; background:#fff; border-radius:10px; padding:8px 10px; cursor:pointer; font-size:0.95rem; text-align:left; }
+    .tool-btn.primary { background:#f0f9ff; }
+    .muted { color: #6b7280; }
+
     .menu-btn { border:1px solid #d1d5db; background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer; margin-bottom:10px; }
     .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 30; }
     .overlay.show { opacity: 1; pointer-events: auto; }
     .drawer { position: fixed; top: 0; left: 0; height: 100dvh; width: min(88vw, 360px); background: #fff; border-right: 1px solid #e5e7eb; transform: translateX(-100%); transition: transform .2s ease; z-index: 40; display: flex; flex-direction: column; }
-    .drawer.show { transform: translateX(0); } .drawer-head { display:flex; align-items:center; justify-content:space-between; padding:14px; border-bottom:1px solid #e5e7eb; font-weight:700; }
-    .close-btn { border:1px solid #d1d5db; background:#fff; border-radius:8px; width:34px; height:34px; cursor:pointer; } .drawer-body { padding:10px 14px 16px; overflow:auto; flex:1; }
+    .drawer.show { transform: translateX(0); }
+    .drawer-head { display:flex; align-items:center; justify-content:space-between; padding: 14px; border-bottom: 1px solid #e5e7eb; font-weight:700; }
+    .close-btn { border:1px solid #d1d5db; background:#fff; border-radius:8px; width:34px; height:34px; cursor:pointer; }
+    .drawer-body { padding: 10px 14px 16px; overflow:auto; flex:1; }
     .drawer-body a { display:block; color:#2563eb; text-decoration:none; padding:8px 0; border-bottom:1px dashed #eef2f7; word-break:break-all; }
+    .drawer-body a:hover { text-decoration: underline; }
   </style>
-</head><body>
+</head>
+
+<body>
   <button class="menu-btn" id="openMenu" aria-label="メニューを開く">☰</button>
-  <aside class="drawer" id="drawer" aria-hidden="true"><div class="drawer-head"><span>☰</span><button class="close-btn" id="closeMenu">✕</button></div><div class="drawer-body"><div id="links">読み込み中...</div></div></aside><div class="overlay" id="overlay"></div>
-  <h1>Daily Dev Tips</h1><p><strong>日付:</strong> 2026-03-11 (JST)</p>
-  <h2>目次</h2><ul>
+
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <span>☰</span>
+      <button class="close-btn" id="closeMenu">✕</button>
+    </div>
+    <div class="drawer-body">
+      <div class="muted" style="margin-bottom:8px;">latest + 過去HTML（新しい順）</div>
+      <div id="links"><span class="muted">読み込み中...</span></div>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <h1>Daily Dev Tips</h1>
+  <p><strong>日付:</strong> 2026-03-11 (JST) / wip sample</p>
+
+  <h2>目次</h2>
+  <ul>
     <li><a href="#laravel" target="_blank" rel="noopener noreferrer">Laravel（複数サブトピック）</a></li>
     <li><a href="#laravel-test" target="_blank" rel="noopener noreferrer">Laravelユニットテスト</a></li>
     <li><a href="#vue" target="_blank" rel="noopener noreferrer">Vue（Vue2中心 + Vue3補足）</a></li>
     <li><a href="#docker" target="_blank" rel="noopener noreferrer">Docker</a></li>
-    <li><a href="#aws" target="_blank" rel="noopener noreferrer">AWS（基礎→実務）</a></li>
-    <li><a href="#react" target="_blank" rel="noopener noreferrer">React（段階学習）</a></li>
+    <li><a href="#aws" target="_blank" rel="noopener noreferrer">AWS（開発者向け基礎→実務）</a></li>
+    <li><a href="#react" target="_blank" rel="noopener noreferrer">React</a></li>
     <li><a href="#typescript" target="_blank" rel="noopener noreferrer">TypeScript</a></li>
-    <li><a href="#php-func" target="_blank" rel="noopener noreferrer">PHP関数</a></li>
-    <li><a href="#array-helper" target="_blank" rel="noopener noreferrer">配列ヘルパー</a></li>
+    <li><a href="#php-array" target="_blank" rel="noopener noreferrer">PHP関数 / 配列ヘルパー</a></li>
     <li><a href="#lodash" target="_blank" rel="noopener noreferrer">Lodash</a></li>
-    <li><a href="#htmlcss" target="_blank" rel="noopener noreferrer">HTML/CSS</a></li>
+    <li><a href="#htmlcss" target="_blank" rel="noopener noreferrer">HTML & CSS（必須基礎）</a></li>
     <li><a href="#build" target="_blank" rel="noopener noreferrer">フロントエンドビルド最適化</a></li>
     <li><a href="#python" target="_blank" rel="noopener noreferrer">Python実用活用</a></li>
-    <li><a href="#zapier-n8n" target="_blank" rel="noopener noreferrer">Zapier+n8n比較</a></li>
+    <li><a href="#zapier-n8n" target="_blank" rel="noopener noreferrer">Zapier + n8n比較</a></li>
     <li><a href="#openclaw" target="_blank" rel="noopener noreferrer">OpenClaw</a></li>
-    <li><a href="#sql" target="_blank" rel="noopener noreferrer">SQL実践</a></li>
-    <li><a href="#refactor" target="_blank" rel="noopener noreferrer">設計リファクタ</a></li>
-    <li><a href="#ops" target="_blank" rel="noopener noreferrer">監視・運用</a></li>
-    <li><a href="#llm-app" target="_blank" rel="noopener noreferrer">LLMアプリ設計</a></li>
-    <li><a href="#prompt" target="_blank" rel="noopener noreferrer">プロンプト設計実務</a></li>
-    <li><a href="#ai-cost" target="_blank" rel="noopener noreferrer">AIコスト最適化</a></li>
-    <li><a href="#ai-safety" target="_blank" rel="noopener noreferrer">AI安全性</a></li>
-    <li><a href="#ai-productivity" target="_blank" rel="noopener noreferrer">AI×開発生産性</a></li>
+    <li><a href="#sql" target="_blank" rel="noopener noreferrer">SQL実践（DB設計・Index・EXPLAIN）</a></li>
+    <li><a href="#refactor" target="_blank" rel="noopener noreferrer">設計リファクタ（責務分離・命名・レビュー観点）</a></li>
+    <li><a href="#ops" target="_blank" rel="noopener noreferrer">監視・運用（Sentry・ログ設計・障害初動）</a></li>
+    <li><a href="#llm-app" target="_blank" rel="noopener noreferrer">LLMアプリ設計（RAG・Tool Calling・Agent）</a></li>
+    <li><a href="#prompt" target="_blank" rel="noopener noreferrer">プロンプト設計実務（評価・再現性）</a></li>
+    <li><a href="#ai-cost" target="_blank" rel="noopener noreferrer">AIコスト最適化（トークン・キャッシュ・モデル選定）</a></li>
+    <li><a href="#ai-safety" target="_blank" rel="noopener noreferrer">AI安全性（PII・権限・プロンプトインジェクション対策）</a></li>
+    <li><a href="#ai-productivity" target="_blank" rel="noopener noreferrer">AI×開発生産性（PR要約・テスト生成・障害一次切り分け）</a></li>
   </ul>
-  <section id="laravel"><details open><summary>Laravel（複数サブトピック）（今日: EloquentのwithCount最適化とEXPLAIN確認）</summary><ul>
-    <li><strong>概要:</strong> EloquentのwithCount最適化とEXPLAIN確認 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
+
+  <section id="laravel"><details open><summary>Laravel（今日のサブトピック: Eloquent集約 + SQL最適化 / Queue再試行設計）</summary><ul>
+    <li><strong>概要:</strong> Eloquentで集計を安全に書きつつ、実クエリを見てIndexとEXPLAINで詰める日。</li>
+    <li><strong>なぜ面白いか:</strong> 「読みやすいLaravelコード」と「速いSQL」を両立できると、実装の説得力が一段上がる。</li>
+    <li><strong>現場での使いどころ:</strong> ダッシュボード集計APIで<code>withCount()</code>と複合Indexを合わせてP95を短縮。</li>
+    <li><strong>ハマりどころ:</strong> Eloquent側だけ調整して満足し、ソート列のIndex不足で本番だけ遅い。</li>
+    <li><strong>もう1テーマ:</strong> Queueの<code>backoff</code>と<code>tries</code>を明示し、外部API障害時の連鎖失敗を防ぐ。</li>
+    <li><strong>ミニ課題:</strong> 既存1エンドポイントで「Eloquent変更前後 + EXPLAIN + レスポンスタイム」を比較して記録。</li>
+    <li><strong>公式リンク:</strong> Eloquent・Queue・DB Queryの3本を読み、現場コードに1つ反映する。</li>
   </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「Laravel（複数サブトピック）のテーマ『EloquentのwithCount最適化とEXPLAIN確認』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="Laravel（複数サブトピック）のテーマ『EloquentのwithCount最適化とEXPLAIN確認』を、実装手順つきで改善提案して。">コピー</button></div>
+  <pre><code>$reports = Order::query()
+  ->selectRaw('user_id, count(*) as total')
+  ->whereBetween('created_at', [$from, $to])
+  ->groupBy('user_id')
+  ->orderByDesc('total')
+  ->limit(20)
+  ->get();</code></pre>
+  <p>参考: <a href="https://laravel.com/docs/11.x/eloquent" target="_blank" rel="noopener noreferrer">Eloquent</a> / <a href="https://laravel.com/docs/11.x/queries" target="_blank" rel="noopener noreferrer">Query Builder</a> / <a href="https://laravel.com/docs/11.x/queues" target="_blank" rel="noopener noreferrer">Queues</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このLaravel集計クエリをEloquent可読性を保ったまま高速化したい。Index案とEXPLAIN読み方も教えて」 <button class="copy-btn" data-copy="このLaravel集計クエリをEloquent可読性を保ったまま高速化したい。Index案とEXPLAIN読み方も教えて">コピー</button></div>
   </details></section>
 
-  <section id="laravel-test"><details><summary>Laravelユニットテスト（今日: 境界値テストを先に書くTDDミニ実践）</summary><ul>
-    <li><strong>概要:</strong> 境界値テストを先に書くTDDミニ実践 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「Laravelユニットテストのテーマ『境界値テストを先に書くTDDミニ実践』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="Laravelユニットテストのテーマ『境界値テストを先に書くTDDミニ実践』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="laravel-test"><details><summary>Laravelユニットテスト（境界値 + モック最小化）</summary><ul>
+    <li><strong>概要:</strong> Unitは純粋ロジックに集中し、外部I/Oは薄いFake層で切る。</li>
+    <li><strong>なぜ面白いか:</strong> テストが速くなるほど、修正→実行→改善のサイクルが回る。</li>
+    <li><strong>現場での使いどころ:</strong> 請求計算・割引判定・締め処理など、仕様が変わりやすい箇所の防波堤。</li>
+    <li><strong>ハマりどころ:</strong> Mockを増やしすぎて実装追従テストになり、リファクタ耐性が落ちる。</li>
+    <li><strong>観点:</strong> 正常系だけでなく「0件/境界日付/上限超え」の3点を必ず入れる。</li>
+    <li><strong>ミニ課題:</strong> 既存Serviceに境界値テスト3件を追加し、失敗させてから通す。</li>
+    <li><strong>公式リンク:</strong> Laravel Testing + PHPUnit assertionsを再確認。</li>
+  </ul><p>参考: <a href="https://laravel.com/docs/11.x/testing" target="_blank" rel="noopener noreferrer">Laravel Testing</a> / <a href="https://docs.phpunit.de/" target="_blank" rel="noopener noreferrer">PHPUnit</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このLaravelテスト設計で不足している境界値ケースを洗い出して」 <button class="copy-btn" data-copy="このLaravelテスト設計で不足している境界値ケースを洗い出して">コピー</button></div>
   </details></section>
 
-  <section id="vue"><details><summary>Vue（Vue2中心 + Vue3補足）（今日: watchを減らしてcomputed中心へ整理）</summary><ul>
-    <li><strong>概要:</strong> watchを減らしてcomputed中心へ整理 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「Vue（Vue2中心 + Vue3補足）のテーマ『watchを減らしてcomputed中心へ整理』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="Vue（Vue2中心 + Vue3補足）のテーマ『watchを減らしてcomputed中心へ整理』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="vue"><details><summary>Vue（Vue2主軸: computed/watch整理 + Vue3移行の足場）</summary><ul>
+    <li><strong>概要:</strong> Vue2のOptions APIで責務分離し、将来のComposition API移行を楽にする。</li>
+    <li><strong>なぜ面白いか:</strong> 今の保守性を上げながら、移行コストを先払いで下げられる。</li>
+    <li><strong>現場での使いどころ:</strong> フォーム入力の整形はcomputed、API再取得や副作用はwatchに限定。</li>
+    <li><strong>ハマりどころ:</strong> deep watchを多用し、予期せぬ再描画とデバッグ困難を招く。</li>
+    <li><strong>Vue3補足:</strong> <code>ref/computed/watch</code>に置き換える際、責務境界が明確だと移植が速い。</li>
+    <li><strong>ミニ課題:</strong> Vue2コンポーネント1つでwatchを1件削減し、computedへ置換。</li>
+    <li><strong>公式リンク:</strong> Vue2 guideとVue3 essentialsを併読。</li>
+  </ul><p>参考: <a href="https://v2.vuejs.org/v2/guide/computed.html" target="_blank" rel="noopener noreferrer">Vue2 Computed/Watch</a> / <a href="https://vuejs.org/guide/essentials/watchers.html" target="_blank" rel="noopener noreferrer">Vue3 Watchers</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このVue2コードをVue3移行しやすい形に整理して。watch削減案も欲しい」 <button class="copy-btn" data-copy="このVue2コードをVue3移行しやすい形に整理して。watch削減案も欲しい">コピー</button></div>
   </details></section>
 
-  <section id="docker"><details><summary>Docker（今日: 依存レイヤー分離でbuild短縮）</summary><ul>
-    <li><strong>概要:</strong> 依存レイヤー分離でbuild短縮 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「Dockerのテーマ『依存レイヤー分離でbuild短縮』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="Dockerのテーマ『依存レイヤー分離でbuild短縮』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="docker"><details><summary>Docker（開発速度を落とさないイメージ設計）</summary><ul>
+    <li><strong>概要:</strong> マルチステージ + キャッシュ戦略で、開発とCIの両方を速く安定させる。</li>
+    <li><strong>なぜ面白いか:</strong> 「動くけど遅い」環境を、誰でも同じ速度で回せるようにできる。</li>
+    <li><strong>現場での使いどころ:</strong> Node/PHP混在プロジェクトで依存更新時の再ビルド時間を短縮。</li>
+    <li><strong>ハマりどころ:</strong> build contextが肥大化し、無関係ファイル変更でキャッシュ崩壊。</li>
+    <li><strong>観点:</strong> .dockerignore整備、依存インストール層の固定、runtimeイメージ最小化。</li>
+    <li><strong>ミニ課題:</strong> 直近Dockerfileを1本見直し、ビルド時間をbefore/afterで計測。</li>
+    <li><strong>公式リンク:</strong> Build cacheとCompose docsを確認。</li>
+  </ul><p>参考: <a href="https://docs.docker.com/build/cache/" target="_blank" rel="noopener noreferrer">Docker Build Cache</a> / <a href="https://docs.docker.com/compose/" target="_blank" rel="noopener noreferrer">Docker Compose</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このDockerfileのレイヤー順を最適化して、開発とCIの両面で速くしたい」 <button class="copy-btn" data-copy="このDockerfileのレイヤー順を最適化して、開発とCIの両面で速くしたい">コピー</button></div>
   </details></section>
 
-  <section id="aws"><details><summary>AWS（基礎→実務）（今日: CloudWatchアラームの初動設計）</summary><ul>
-    <li><strong>概要:</strong> CloudWatchアラームの初動設計 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「AWS（基礎→実務）のテーマ『CloudWatchアラームの初動設計』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="AWS（基礎→実務）のテーマ『CloudWatchアラームの初動設計』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="aws"><details><summary>AWS（基礎→実務: IAM最小権限 / CloudWatch運用導線）</summary><ul>
+    <li><strong>概要:</strong> IAM最小権限を起点に、監視ログ導線を最初から設計する。</li>
+    <li><strong>なぜ面白いか:</strong> セキュリティと運用性を同時に上げると、障害時の復旧速度が変わる。</li>
+    <li><strong>現場での使いどころ:</strong> 新規環境で「誰が何をできるか」と「どこを見れば異常かわかるか」を先に固定。</li>
+    <li><strong>ハマりどころ:</strong> とりあえずAdminで開始し、そのまま本番まで残る。</li>
+    <li><strong>実務ポイント:</strong> CloudWatchアラームは「閾値」だけでなく「通知先と初動手順」までセット。</li>
+    <li><strong>ミニ課題:</strong> 開発者ロール1つから不要権限を削り、アラーム1つを運用Runbookに紐づけ。</li>
+    <li><strong>公式リンク:</strong> IAM user guide / CloudWatch docs。</li>
+  </ul><p>参考: <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html" target="_blank" rel="noopener noreferrer">IAM</a> / <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html" target="_blank" rel="noopener noreferrer">CloudWatch</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このAWS構成を最小権限に近づけつつ、運用で困らない設計にしたい」 <button class="copy-btn" data-copy="このAWS構成を最小権限に近づけつつ、運用で困らない設計にしたい">コピー</button></div>
   </details></section>
 
-  <section id="react"><details><summary>React（段階学習）（今日: 不要なstate削減と再レンダリング抑制）</summary><ul>
-    <li><strong>概要:</strong> 不要なstate削減と再レンダリング抑制 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「React（段階学習）のテーマ『不要なstate削減と再レンダリング抑制』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="React（段階学習）のテーマ『不要なstate削減と再レンダリング抑制』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="react"><details><summary>React（状態設計と再レンダリング最適化）</summary><ul>
+    <li><strong>概要:</strong> stateを最小単位で持ち、派生値は計算に寄せる設計を徹底する。</li>
+    <li><strong>なぜ面白いか:</strong> 無駄な再レンダリングが減ると、体感速度と可読性が同時に上がる。</li>
+    <li><strong>現場での使いどころ:</strong> 一覧 + フィルタ + モーダル構成で責務分離しやすい。</li>
+    <li><strong>ハマりどころ:</strong> グローバルstateに寄せすぎて、更新範囲が肥大化する。</li>
+    <li><strong>実務ポイント:</strong> memo化は「測ってから」。先にprops設計を見直す。</li>
+    <li><strong>ミニ課題:</strong> 1画面で不要stateを2つ削り、derived stateへ置換。</li>
+    <li><strong>公式リンク:</strong> React learnのstate管理章を再確認。</li>
+  </ul><p>参考: <a href="https://react.dev/learn/managing-state" target="_blank" rel="noopener noreferrer">Managing State</a> / <a href="https://react.dev/reference/react/useMemo" target="_blank" rel="noopener noreferrer">useMemo</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このReactコンポーネントのstate設計を見直して、再レンダリングを減らしたい」 <button class="copy-btn" data-copy="このReactコンポーネントのstate設計を見直して、再レンダリングを減らしたい">コピー</button></div>
   </details></section>
 
-  <section id="typescript"><details><summary>TypeScript（今日: unknown→型ガードの実装パターン）</summary><ul>
-    <li><strong>概要:</strong> unknown→型ガードの実装パターン を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「TypeScriptのテーマ『unknown→型ガードの実装パターン』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="TypeScriptのテーマ『unknown→型ガードの実装パターン』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="typescript"><details><summary>TypeScript（型境界を先に決める実務）</summary><ul>
+    <li><strong>概要:</strong> API入出力の型境界を固定し、内部ロジックの安全性を上げる。</li>
+    <li><strong>なぜ面白いか:</strong> 仕様の曖昧さが型エラーとして早期に出る。</li>
+    <li><strong>現場での使いどころ:</strong> フロントAPIクライアント層でunknown→narrowingを徹底。</li>
+    <li><strong>ハマりどころ:</strong> anyの常用で、実質JavaScript化して恩恵を失う。</li>
+    <li><strong>実務ポイント:</strong> zod等のruntime validationと型推論を組み合わせると堅い。</li>
+    <li><strong>ミニ課題:</strong> unknown入力の型ガードを1つ追加し、例外ケースを明示。</li>
+    <li><strong>公式リンク:</strong> Handbook narrowing / utility typesを確認。</li>
+  </ul><p>参考: <a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html" target="_blank" rel="noopener noreferrer">Narrowing</a> / <a href="https://www.typescriptlang.org/docs/handbook/utility-types.html" target="_blank" rel="noopener noreferrer">Utility Types</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このTypeScript実装の型境界を強くしたい。any削減と型ガード案をください」 <button class="copy-btn" data-copy="このTypeScript実装の型境界を強くしたい。any削減と型ガード案をください">コピー</button></div>
   </details></section>
 
-  <section id="php-func"><details><summary>PHP関数（今日: array_map/filter/reduceの適材適所）</summary><ul>
-    <li><strong>概要:</strong> array_map/filter/reduceの適材適所 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「PHP関数のテーマ『array_map/filter/reduceの適材適所』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="PHP関数のテーマ『array_map/filter/reduceの適材適所』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="php-array"><details><summary>PHP関数 / 配列ヘルパー（可読性と速度の両立）</summary><ul>
+    <li><strong>概要:</strong> array_*関数とCollectionを意図で使い分け、変換処理を読みやすく保つ。</li>
+    <li><strong>なぜ面白いか:</strong> 同じ処理でも「意図が伝わる書き方」にするとレビューが速い。</li>
+    <li><strong>現場での使いどころ:</strong> APIレスポンス整形、CSV変換、集計前データ整備。</li>
+    <li><strong>ハマりどころ:</strong> ネストした無名関数で可読性が下がり、バグ混入が増える。</li>
+    <li><strong>実務ポイント:</strong> 変換の段階を分け、途中結果を変数で残すと追跡しやすい。</li>
+    <li><strong>ミニ課題:</strong> 複雑な配列変換1本を関数分割し、レビューしやすくする。</li>
+    <li><strong>公式リンク:</strong> PHP array関数 / Laravel Collections。</li>
+  </ul><p>参考: <a href="https://www.php.net/manual/ja/ref.array.php" target="_blank" rel="noopener noreferrer">PHP配列関数</a> / <a href="https://laravel.com/docs/11.x/collections" target="_blank" rel="noopener noreferrer">Laravel Collections</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このPHP配列処理を可読性優先でリファクタして。速度劣化しない案で」 <button class="copy-btn" data-copy="このPHP配列処理を可読性優先でリファクタして。速度劣化しない案で">コピー</button></div>
   </details></section>
 
-  <section id="array-helper"><details><summary>配列ヘルパー（今日: data_getでネスト安全アクセス）</summary><ul>
-    <li><strong>概要:</strong> data_getでネスト安全アクセス を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「配列ヘルパーのテーマ『data_getでネスト安全アクセス』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="配列ヘルパーのテーマ『data_getでネスト安全アクセス』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="lodash"><details><summary>Lodash（使う/使わないの判断基準）</summary><ul>
+    <li><strong>概要:</strong> lodashは「短くなる」だけでなく、バンドル影響まで見て採用判断する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな関数選定が、フロント性能と保守コストに効く。</li>
+    <li><strong>現場での使いどころ:</strong> debounce・groupBy・deep clone等、ネイティブで冗長な箇所。</li>
+    <li><strong>ハマりどころ:</strong> 全量importで初期読み込みが重くなる。</li>
+    <li><strong>実務ポイント:</strong> ESM個別import + bundle analyzerで定量確認。</li>
+    <li><strong>ミニ課題:</strong> lodash依存1箇所をネイティブ置換し、可読性/サイズ比較を記録。</li>
+    <li><strong>公式リンク:</strong> Lodash docsとwebpack tree shaking。</li>
+  </ul><p>参考: <a href="https://lodash.com/docs/" target="_blank" rel="noopener noreferrer">Lodash</a> / <a href="https://webpack.js.org/guides/tree-shaking/" target="_blank" rel="noopener noreferrer">Tree Shaking</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このLodash利用は残すべき？ネイティブ置換含めて判断して」 <button class="copy-btn" data-copy="このLodash利用は残すべき？ネイティブ置換含めて判断して">コピー</button></div>
   </details></section>
 
-  <section id="lodash"><details><summary>Lodash（今日: debounce/throttle使い分け）</summary><ul>
-    <li><strong>概要:</strong> debounce/throttle使い分け を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「Lodashのテーマ『debounce/throttle使い分け』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="Lodashのテーマ『debounce/throttle使い分け』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="htmlcss"><details><summary>HTML & CSS（必須基礎: セマンティクス / レイアウト崩れ予防）</summary><ul>
+    <li><strong>概要:</strong> セマンティックタグ + box model理解で、崩れにくいUI土台を作る。</li>
+    <li><strong>なぜ面白いか:</strong> アクセシビリティとSEO、保守性を同時に改善できる。</li>
+    <li><strong>現場での使いどころ:</strong> LP・管理画面・メールテンプレの基本設計。</li>
+    <li><strong>ハマりどころ:</strong> margin相殺やbox-sizing未設定で想定外の幅になる。</li>
+    <li><strong>実務ポイント:</strong> 初期化CSSで<code>box-sizing:border-box</code>を先に入れる。</li>
+    <li><strong>ミニ課題:</strong> 既存1ページをsemanticタグへ置換し、見出し階層を整理。</li>
+    <li><strong>公式リンク:</strong> MDN semantics / box model。</li>
+  </ul><p>参考: <a href="https://developer.mozilla.org/ja/docs/Glossary/Semantics" target="_blank" rel="noopener noreferrer">MDN Semantics</a> / <a href="https://developer.mozilla.org/ja/docs/Learn/CSS/Building_blocks/The_box_model" target="_blank" rel="noopener noreferrer">MDN Box Model</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このHTML/CSSの崩れやすい点を特定して、最小修正案を出して」 <button class="copy-btn" data-copy="このHTML/CSSの崩れやすい点を特定して、最小修正案を出して">コピー</button></div>
   </details></section>
 
-  <section id="htmlcss"><details><summary>HTML/CSS（今日: 崩れにくいbox model設計）</summary><ul>
-    <li><strong>概要:</strong> 崩れにくいbox model設計 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「HTML/CSSのテーマ『崩れにくいbox model設計』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="HTML/CSSのテーマ『崩れにくいbox model設計』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="build"><details><summary>フロントエンドビルド最適化（webpack/Vite/npm/yarn）</summary><ul>
+    <li><strong>概要:</strong> 起動遅延は「依存解決」「変換」「監視」「キャッシュ」に分けて測る。</li>
+    <li><strong>なぜ面白いか:</strong> 待ち時間短縮はそのまま開発体験の改善になる。</li>
+    <li><strong>現場での使いどころ:</strong> モノレポで初回起動・HMR遅延のボトルネック特定。</li>
+    <li><strong>ハマりどころ:</strong> 感覚で設定を変え、効果検証なしで複雑化する。</li>
+    <li><strong>実務ポイント:</strong> 変更は1要素ずつ、<code>time</code>計測を3回平均で比較。</li>
+    <li><strong>ミニ課題:</strong> source map設定を2種比較し、DXと速度の妥協点を決める。</li>
+    <li><strong>公式リンク:</strong> Vite performance / webpack build performance。</li>
+  </ul><p>参考: <a href="https://vite.dev/guide/performance.html" target="_blank" rel="noopener noreferrer">Vite Performance</a> / <a href="https://webpack.js.org/guides/build-performance/" target="_blank" rel="noopener noreferrer">webpack Build Performance</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このビルド計測ログを見て、改善優先順位をつけてほしい」 <button class="copy-btn" data-copy="このビルド計測ログを見て、改善優先順位をつけてほしい">コピー</button></div>
   </details></section>
 
-  <section id="build"><details><summary>フロントエンドビルド最適化（今日: Viteキャッシュ計測）</summary><ul>
-    <li><strong>概要:</strong> Viteキャッシュ計測 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「フロントエンドビルド最適化のテーマ『Viteキャッシュ計測』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="フロントエンドビルド最適化のテーマ『Viteキャッシュ計測』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="python"><details><summary>Python実用活用（定型業務の自動化）</summary><ul>
+    <li><strong>概要:</strong> CSV/JSON/HTTP処理を小さく組み合わせ、反復作業をスクリプト化する。</li>
+    <li><strong>なぜ面白いか:</strong> 10分の作業を毎日なくせると、年単位で大きな差になる。</li>
+    <li><strong>現場での使いどころ:</strong> データ整形、定時レポート作成、API連携バッチ。</li>
+    <li><strong>ハマりどころ:</strong> 例外処理不足で一部データ欠損に気づけない。</li>
+    <li><strong>実務ポイント:</strong> 入出力件数の一致チェックと失敗ログを必ず残す。</li>
+    <li><strong>ミニ課題:</strong> 1スクリプトにリトライとログ出力を追加して再実行可能にする。</li>
+    <li><strong>公式リンク:</strong> csv/json/logging標準ライブラリ。</li>
+  </ul><pre><code>import logging
+logging.basicConfig(level=logging.INFO)
+# 件数チェックを最後に必ず出力
+logging.info("processed=%d", len(rows))</code></pre>
+  <p>参考: <a href="https://docs.python.org/3/library/csv.html" target="_blank" rel="noopener noreferrer">csv</a> / <a href="https://docs.python.org/3/library/logging.html" target="_blank" rel="noopener noreferrer">logging</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このPython業務スクリプトを運用向けに堅牢化したい。失敗時設計も含めて提案して」 <button class="copy-btn" data-copy="このPython業務スクリプトを運用向けに堅牢化したい。失敗時設計も含めて提案して">コピー</button></div>
   </details></section>
 
-  <section id="python"><details><summary>Python実用活用（今日: ログ付き自動化スクリプト）</summary><ul>
-    <li><strong>概要:</strong> ログ付き自動化スクリプト を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「Python実用活用のテーマ『ログ付き自動化スクリプト』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="Python実用活用のテーマ『ログ付き自動化スクリプト』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="zapier-n8n"><details><summary>Zapier + n8n比較（導入速度と柔軟性のトレードオフ）</summary><ul>
+    <li><strong>概要:</strong> Zapierは導入速度、n8nは分岐自由度と自己ホスト性が強み。</li>
+    <li><strong>なぜ面白いか:</strong> 同じ自動化でも、運用主体に合わせて最適解が変わる。</li>
+    <li><strong>現場での使いどころ:</strong> 非エンジニア主導のSaaS連携はZapier、開発主導の複雑処理はn8n。</li>
+    <li><strong>ハマりどころ:</strong> 初期の楽さだけで選び、後で分岐やコスト制約に詰まる。</li>
+    <li><strong>実務ポイント:</strong> 失敗時再試行・監査ログ・担当者変更フローまで設計する。</li>
+    <li><strong>ミニ課題:</strong> 同一ワークフローを両方で作り、運用負荷を比較表にする。</li>
+    <li><strong>公式リンク:</strong> Zapier apps / n8n docs。</li>
+  </ul><p>参考: <a href="https://zapier.com/apps" target="_blank" rel="noopener noreferrer">Zapier Apps</a> / <a href="https://docs.n8n.io/" target="_blank" rel="noopener noreferrer">n8n Docs</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「この業務はZapierとn8nどちら向き？運用・拡張・コストで比較して」 <button class="copy-btn" data-copy="この業務はZapierとn8nどちら向き？運用・拡張・コストで比較して">コピー</button></div>
   </details></section>
 
-  <section id="zapier-n8n"><details><summary>Zapier+n8n比較（今日: 運用コスト視点で選定）</summary><ul>
-    <li><strong>概要:</strong> 運用コスト視点で選定 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「Zapier+n8n比較のテーマ『運用コスト視点で選定』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="Zapier+n8n比較のテーマ『運用コスト視点で選定』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="openclaw"><details><summary>OpenClaw（定期運用を壊さない設計）</summary><ul>
+    <li><strong>概要:</strong> cronは厳密時刻、heartbeatは巡回、sub-agentは重い処理に分離する。</li>
+    <li><strong>なぜ面白いか:</strong> 自動化の責務分割で「静かな運用」と「必要時の即応」を両立できる。</li>
+    <li><strong>現場での使いどころ:</strong> 日次レポート配信、障害通知、情報収集の定型化。</li>
+    <li><strong>ハマりどころ:</strong> 通知を増やしすぎて、重要アラートが埋もれる。</li>
+    <li><strong>実務ポイント:</strong> 通知文を短文化し、次アクションを1行で明記する。</li>
+    <li><strong>ミニ課題:</strong> 1つの定期タスクをcron化し、失敗時の再送条件を定義。</li>
+    <li><strong>公式リンク:</strong> OpenClaw docs / GitHub。</li>
+  </ul><p>参考: <a href="https://docs.openclaw.ai" target="_blank" rel="noopener noreferrer">OpenClaw Docs</a> / <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">OpenClaw GitHub</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「OpenClawでこの定型業務を自動化したい。cron/heartbeat/sub-agentの設計を提案して」 <button class="copy-btn" data-copy="OpenClawでこの定型業務を自動化したい。cron/heartbeat/sub-agentの設計を提案して">コピー</button></div>
   </details></section>
 
-  <section id="openclaw"><details><summary>OpenClaw（今日: daily運用の再現性を高める）</summary><ul>
-    <li><strong>概要:</strong> daily運用の再現性を高める を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「OpenClawのテーマ『daily運用の再現性を高める』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="OpenClawのテーマ『daily運用の再現性を高める』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="sql"><details><summary>SQL実践（DB設計・Index・EXPLAIN）</summary><ul>
+    <li><strong>概要:</strong> ER設計→Index設計→EXPLAIN検証を1セットで回す。</li>
+    <li><strong>なぜ面白いか:</strong> DBは正しく触ると桁違いに速くなる。</li>
+    <li><strong>現場での使いどころ:</strong> 一覧API遅延、管理画面検索遅延、バッチ処理時間超過の改善。</li>
+    <li><strong>ハマりどころ:</strong> 単一Index乱立でプランが安定せず、更新性能も落ちる。</li>
+    <li><strong>実務ポイント:</strong> where + order byを見て複合Index順序を決める。</li>
+    <li><strong>ミニ課題:</strong> 遅いSQL1本でEXPLAIN取得、Index追加後に再比較。</li>
+    <li><strong>公式リンク:</strong> PostgreSQL EXPLAIN / MySQL EXPLAIN。</li>
+  </ul><p>参考: <a href="https://www.postgresql.org/docs/current/using-explain.html" target="_blank" rel="noopener noreferrer">PostgreSQL EXPLAIN</a> / <a href="https://dev.mysql.com/doc/refman/8.0/en/explain.html" target="_blank" rel="noopener noreferrer">MySQL EXPLAIN</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このSQLのEXPLAIN結果から、Index改善案を優先順で提案して」 <button class="copy-btn" data-copy="このSQLのEXPLAIN結果から、Index改善案を優先順で提案して">コピー</button></div>
   </details></section>
 
-  <section id="sql"><details><summary>SQL実践（今日: 複合Indexと実行計画の見方）</summary><ul>
-    <li><strong>概要:</strong> 複合Indexと実行計画の見方 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「SQL実践のテーマ『複合Indexと実行計画の見方』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="SQL実践のテーマ『複合Indexと実行計画の見方』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="refactor"><details><summary>設計リファクタ（責務分離・命名・レビュー観点）</summary><ul>
+    <li><strong>概要:</strong> 変更理由ごとに責務を分離し、命名で意図を読める状態を作る。</li>
+    <li><strong>なぜ面白いか:</strong> 動くコードより「次に直せるコード」の価値が高いと実感できる。</li>
+    <li><strong>現場での使いどころ:</strong> 肥大化したService/Controllerの分解、レビュー効率向上。</li>
+    <li><strong>ハマりどころ:</strong> 抽象化しすぎて追跡不能な設計になる。</li>
+    <li><strong>実務ポイント:</strong> レビュー時は「命名の一貫性」「副作用の位置」「境界テスト有無」を確認。</li>
+    <li><strong>ミニ課題:</strong> 300行超メソッドを2分割し、責務コメントを削除できる命名へ変更。</li>
+    <li><strong>公式リンク:</strong> Refactoring catalog / Clean Code principles。</li>
+  </ul><p>参考: <a href="https://refactoring.guru/refactoring" target="_blank" rel="noopener noreferrer">Refactoring Catalog</a> / <a href="https://martinfowler.com/bliki/CodeSmell.html" target="_blank" rel="noopener noreferrer">Code Smell</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このコードを責務分離したい。命名方針とレビュー観点付きで提案して」 <button class="copy-btn" data-copy="このコードを責務分離したい。命名方針とレビュー観点付きで提案して">コピー</button></div>
   </details></section>
 
-  <section id="refactor"><details><summary>設計リファクタ（今日: 責務分離で可読性向上）</summary><ul>
-    <li><strong>概要:</strong> 責務分離で可読性向上 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「設計リファクタのテーマ『責務分離で可読性向上』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="設計リファクタのテーマ『責務分離で可読性向上』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="ops"><details><summary>監視・運用（Sentry・ログ設計・障害初動）</summary><ul>
+    <li><strong>概要:</strong> エラー監視は「検知」だけでなく「初動の速さ」まで設計する。</li>
+    <li><strong>なぜ面白いか:</strong> 同じ障害でも、初動品質で被害規模が大きく変わる。</li>
+    <li><strong>現場での使いどころ:</strong> Sentry alert→Runbook→担当通知→暫定回避までを一本化。</li>
+    <li><strong>ハマりどころ:</strong> 構造化ログなしで、障害時に検索不能。</li>
+    <li><strong>実務ポイント:</strong> request_id/user_id/releaseを共通キーでログに残す。</li>
+    <li><strong>ミニ課題:</strong> 主要API1本に構造化ログを追加し、Sentryイベントと相互参照可能にする。</li>
+    <li><strong>公式リンク:</strong> Sentry docs / OpenTelemetry logs。</li>
+  </ul><p>参考: <a href="https://docs.sentry.io/" target="_blank" rel="noopener noreferrer">Sentry Docs</a> / <a href="https://opentelemetry.io/docs/concepts/signals/logs/" target="_blank" rel="noopener noreferrer">OpenTelemetry Logs</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「この障害ログ設計を見直したい。初動を速くするキー項目を提案して」 <button class="copy-btn" data-copy="この障害ログ設計を見直したい。初動を速くするキー項目を提案して">コピー</button></div>
   </details></section>
 
-  <section id="ops"><details><summary>監視・運用（今日: 障害初動テンプレを整備）</summary><ul>
-    <li><strong>概要:</strong> 障害初動テンプレを整備 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「監視・運用のテーマ『障害初動テンプレを整備』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="監視・運用のテーマ『障害初動テンプレを整備』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="llm-app"><details><summary>LLMアプリ設計（RAG・Tool Calling・Agent）</summary><ul>
+    <li><strong>概要:</strong> RAGは知識補完、Tool Callingは外部実行、Agentは段取り制御として分離して考える。</li>
+    <li><strong>なぜ面白いか:</strong> 失敗原因を層別化でき、改善サイクルが回しやすくなる。</li>
+    <li><strong>現場での使いどころ:</strong> 社内FAQ、チケット分類、運用オペレーション自動化。</li>
+    <li><strong>ハマりどころ:</strong> すべてをAgent化し、再現性とコストを失う。</li>
+    <li><strong>実務ポイント:</strong> まずは固定ワークフロー + 必要最小のツール実行に寄せる。</li>
+    <li><strong>ミニ課題:</strong> 1ユースケースをRAG単体で実装し、必要ならTool Callingを追加。</li>
+    <li><strong>公式リンク:</strong> OpenAI cookbook / Anthropic tool use docs。</li>
+  </ul><p>参考: <a href="https://platform.openai.com/docs/guides/retrieval" target="_blank" rel="noopener noreferrer">Retrieval Guide</a> / <a href="https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/overview" target="_blank" rel="noopener noreferrer">Tool Use Overview</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このLLM要件をRAG/Tool Calling/Agentに分解して最小実装案を作って」 <button class="copy-btn" data-copy="このLLM要件をRAG/Tool Calling/Agentに分解して最小実装案を作って">コピー</button></div>
   </details></section>
 
-  <section id="llm-app"><details><summary>LLMアプリ設計（今日: RAGとTool Callingの責務分離）</summary><ul>
-    <li><strong>概要:</strong> RAGとTool Callingの責務分離 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「LLMアプリ設計のテーマ『RAGとTool Callingの責務分離』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="LLMアプリ設計のテーマ『RAGとTool Callingの責務分離』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="prompt"><details><summary>プロンプト設計実務（評価・再現性）</summary><ul>
+    <li><strong>概要:</strong> 良いプロンプトは文才より、評価可能な仕様化で作る。</li>
+    <li><strong>なぜ面白いか:</strong> 出力品質を「再現できる形」で改善できる。</li>
+    <li><strong>現場での使いどころ:</strong> 要約、分類、抽出など定型タスクの品質安定化。</li>
+    <li><strong>ハマりどころ:</strong> 成功例だけ見て、失敗ケースを回収しない。</li>
+    <li><strong>実務ポイント:</strong> 入力セット固定・評価観点固定・比較手順固定の3点セット。</li>
+    <li><strong>ミニ課題:</strong> 10件の評価データを作り、プロンプトA/Bを同条件で比較。</li>
+    <li><strong>公式リンク:</strong> Prompt engineering guide / Evals docs。</li>
+  </ul><p>参考: <a href="https://platform.openai.com/docs/guides/prompt-engineering" target="_blank" rel="noopener noreferrer">Prompt Engineering</a> / <a href="https://platform.openai.com/docs/guides/evals" target="_blank" rel="noopener noreferrer">Evals</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このプロンプトの再現性を高めたい。評価設計込みで改善して」 <button class="copy-btn" data-copy="このプロンプトの再現性を高めたい。評価設計込みで改善して">コピー</button></div>
   </details></section>
 
-  <section id="prompt"><details><summary>プロンプト設計実務（今日: 評価セットで品質比較）</summary><ul>
-    <li><strong>概要:</strong> 評価セットで品質比較 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「プロンプト設計実務のテーマ『評価セットで品質比較』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="プロンプト設計実務のテーマ『評価セットで品質比較』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="ai-cost"><details><summary>AIコスト最適化（トークン・キャッシュ・モデル選定）</summary><ul>
+    <li><strong>概要:</strong> コストは「入力削減」「キャッシュ」「モデル階層化」の3軸で下げる。</li>
+    <li><strong>なぜ面白いか:</strong> 品質を落とさずに運用継続性を高められる。</li>
+    <li><strong>現場での使いどころ:</strong> チャット運用、要約バッチ、RAG APIのランニングコスト圧縮。</li>
+    <li><strong>ハマりどころ:</strong> 高性能モデル固定で、簡単タスクにも高コストを払う。</li>
+    <li><strong>実務ポイント:</strong> ルーティング戦略（軽量→失敗時のみ上位）を入れる。</li>
+    <li><strong>ミニ課題:</strong> 直近ログから上位3ユースケースのトークン消費を可視化。</li>
+    <li><strong>公式リンク:</strong> pricing / caching guidance。</li>
+  </ul><p>参考: <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener noreferrer">Pricing</a> / <a href="https://platform.openai.com/docs/guides/latency-optimization" target="_blank" rel="noopener noreferrer">Latency & Cost Optimization</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このAI機能のコストを下げたい。品質を維持する最適化順序を提案して」 <button class="copy-btn" data-copy="このAI機能のコストを下げたい。品質を維持する最適化順序を提案して">コピー</button></div>
   </details></section>
 
-  <section id="ai-cost"><details><summary>AIコスト最適化（今日: 軽量モデルへのルーティング）</summary><ul>
-    <li><strong>概要:</strong> 軽量モデルへのルーティング を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「AIコスト最適化のテーマ『軽量モデルへのルーティング』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="AIコスト最適化のテーマ『軽量モデルへのルーティング』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="ai-safety"><details><summary>AI安全性（PII・権限・プロンプトインジェクション対策）</summary><ul>
+    <li><strong>概要:</strong> 入力検証・権限境界・出力フィルタを多層で設計する。</li>
+    <li><strong>なぜ面白いか:</strong> 「便利さ」と「事故防止」を両立する設計力がつく。</li>
+    <li><strong>現場での使いどころ:</strong> 社内データ検索、顧客対応支援、自動実行系ツール。</li>
+    <li><strong>ハマりどころ:</strong> プロンプト文だけで防御し、実行レイヤーの制御を忘れる。</li>
+    <li><strong>実務ポイント:</strong> PIIマスキング、allowlist型ツール実行、監査ログ保存を標準化。</li>
+    <li><strong>ミニ課題:</strong> 1フローで「危険入力例」を作り、遮断・縮退動作をテスト。</li>
+    <li><strong>公式リンク:</strong> OWASP LLM Top 10 / NIST AI RMF。</li>
+  </ul><p>参考: <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" target="_blank" rel="noopener noreferrer">OWASP LLM Top 10</a> / <a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener noreferrer">NIST AI RMF</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このAI機能の安全設計レビューをして。PII・権限・注入対策の不足点を洗って」 <button class="copy-btn" data-copy="このAI機能の安全設計レビューをして。PII・権限・注入対策の不足点を洗って">コピー</button></div>
   </details></section>
 
-  <section id="ai-safety"><details><summary>AI安全性（今日: PIIマスクと権限境界）</summary><ul>
-    <li><strong>概要:</strong> PIIマスクと権限境界 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「AI安全性のテーマ『PIIマスクと権限境界』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="AI安全性のテーマ『PIIマスクと権限境界』を、実装手順つきで改善提案して。">コピー</button></div>
+  <section id="ai-productivity"><details><summary>AI×開発生産性（PR要約・テスト生成・障害一次切り分け）</summary><ul>
+    <li><strong>概要:</strong> AIは「人の判断を速くする補助線」として使うと成功しやすい。</li>
+    <li><strong>なぜ面白いか:</strong> レビュー待ち・障害調査の滞留時間を現実的に削減できる。</li>
+    <li><strong>現場での使いどころ:</strong> PR差分要約、回帰テスト候補抽出、ログから一次仮説生成。</li>
+    <li><strong>ハマりどころ:</strong> 生成結果を鵜呑みにして、検証コストが逆に増える。</li>
+    <li><strong>実務ポイント:</strong> 出力フォーマットを固定し、必ず根拠リンクを付ける。</li>
+    <li><strong>ミニ課題:</strong> 直近PR1本でAI要約→人レビュー比較を行い、差分を記録。</li>
+    <li><strong>公式リンク:</strong> GitHub Copilot docs / incident response best practices。</li>
+  </ul><p>参考: <a href="https://docs.github.com/en/copilot" target="_blank" rel="noopener noreferrer">GitHub Copilot</a> / <a href="https://sre.google/workbook/incident-response/" target="_blank" rel="noopener noreferrer">Incident Response</a></p>
+  <div class="ask">質問する: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a> テンプレ:「このPR/障害ログを要約して、次アクションを優先度付きで提案して」 <button class="copy-btn" data-copy="このPR/障害ログを要約して、次アクションを優先度付きで提案して">コピー</button></div>
   </details></section>
 
-  <section id="ai-productivity"><details><summary>AI×開発生産性（今日: PR要約とテスト生成の実運用）</summary><ul>
-    <li><strong>概要:</strong> PR要約とテスト生成の実運用 を中心に、今日中に試せる改善を1つ決める。</li>
-    <li><strong>なぜ面白いか:</strong> 小さな改善でも、開発体験と品質にすぐ効く。</li>
-    <li><strong>現場での使いどころ:</strong> 既存コードに最小変更で手触りある改善を入れる場面。</li>
-    <li><strong>ハマりどころ:</strong> 改善前後の記録を残さず、効果が再現できない。</li>
-    <li><strong>今日の実践ミニ課題:</strong> 1対象でbefore/afterを数値かスクショで保存する。</li>
-  </ul>
-  <p>参考: <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT</a> / <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></p>
-  <div class="ask">質問テンプレ: 「AI×開発生産性のテーマ『PR要約とテスト生成の実運用』を、実装手順つきで改善提案して。」 <button class="copy-btn" data-copy="AI×開発生産性のテーマ『PR要約とテスト生成の実運用』を、実装手順つきで改善提案して。">コピー</button></div>
-  </details></section>
-<script>
-document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(btn.dataset.copy||'');const t=btn.textContent;btn.textContent='コピー済み';setTimeout(()=>btn.textContent=t,1200);}catch(e){console.error(e);}}));
-fetch('https://api.github.com/repos/NewstandardOpenclaw/daily-dev-tips/contents/daily?ref=main').then(r=>r.json()).then(items=>{const names=items.filter(x=>x.type==='file').map(x=>x.name).filter(n=>n.endsWith('.html')&&n!=='index.html'&&n!=='template.html').sort((a,b)=>a==='latest.html'?-1:b==='latest.html'?1:b.localeCompare(a));document.getElementById('links').innerHTML=names.map(n=>`<a href="./${n}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('');}).catch(()=>document.getElementById('links').textContent='取得失敗');
-const d=document.getElementById('drawer'),o=document.getElementById('overlay');document.getElementById('openMenu').onclick=()=>{d.classList.add('show');o.classList.add('show')};document.getElementById('closeMenu').onclick=()=>{d.classList.remove('show');o.classList.remove('show')};o.onclick=()=>{d.classList.remove('show');o.classList.remove('show')};
-</script></body></html>
+  <h2>今日の深掘り候補</h2>
+  <p><strong>「Laravel集計API高速化: Eloquent設計 + EXPLAIN + 複合Indexを45分で検証」</strong></p>
+
+  <script>
+    async function copyToClipboard(text, btn) {
+      try {
+        await navigator.clipboard.writeText(text.trim());
+        const originalText = btn.innerText;
+        btn.innerText = '✅ コピー完了';
+        setTimeout(() => { btn.innerText = originalText; }, 2000);
+      } catch (err) { console.error('コピー失敗', err); }
+    }
+
+    document.querySelectorAll('details').forEach(details => {
+      const askArea = details.querySelector('.ask');
+      const summaryText = details.querySelector('summary span')?.innerText || details.querySelector('summary').innerText.replace(/📋.*/, '');
+      const btnContainer = document.createElement('div');
+      btnContainer.className = 'topic-tools';
+
+      const copyContentBtn = document.createElement('button');
+      copyContentBtn.innerText = 'トピック内容をコピー';
+      copyContentBtn.className = 'tool-btn';
+      copyContentBtn.style.width = '100%';
+      copyContentBtn.addEventListener('click', () => {
+        const clone = details.cloneNode(true);
+        clone.querySelectorAll('button, .ask, summary, p').forEach(el => el.remove());
+        const text = `【${summaryText.trim()}】\n\n${clone.innerText.trim()}`;
+        copyToClipboard(text, copyContentBtn);
+      });
+
+      const copyRefBtn = document.createElement('button');
+      copyRefBtn.innerText = '参照リンクをコピー';
+      copyRefBtn.className = 'tool-btn';
+      copyRefBtn.addEventListener('click', () => {
+        const links = Array.from(details.querySelectorAll('p a')).map(a => a.href).join('\n');
+        const text = `【${summaryText.trim()}】\n${links}`;
+        copyToClipboard(text, copyRefBtn);
+      });
+
+      const copyTaskBtn = document.createElement('button');
+      copyTaskBtn.innerText = '演習依頼文をコピー';
+      copyTaskBtn.className = 'tool-btn primary';
+      copyTaskBtn.addEventListener('click', () => {
+        const taskText = Array.from(details.querySelectorAll('li')).find(li => li.innerText.includes('課題'))?.innerText || 'このトピックの実践課題';
+        const text = `以下の課題について、やってください。\n\n【対象】${summaryText.trim()}\n【課題】${taskText.trim()}`;
+        copyToClipboard(text, copyTaskBtn);
+      });
+
+      btnContainer.append(copyContentBtn, copyRefBtn, copyTaskBtn);
+      if (askArea) askArea.parentNode.insertBefore(btnContainer, askArea);
+    });
+
+    document.querySelectorAll('.ask .copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => copyToClipboard(btn.dataset.copy, btn));
+    });
+
+
+    // hamburger menu + archive links
+    const owner = 'NewstandardOpenclaw';
+    const repo = 'daily-dev-tips';
+    const path = 'daily';
+    const branch = 'main';
+    const api = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
+    const linksEl = document.getElementById('links');
+    const isTarget = (name) => name.endsWith('.html') && name !== 'index.html' && name !== 'template.html';
+
+    fetch(api)
+      .then((res) => { if (!res.ok) throw new Error(`GitHub API error: ${res.status}`); return res.json(); })
+      .then((items) => {
+        const names = items.filter((x) => x.type === 'file').map((x) => x.name).filter(isTarget).sort((a,b)=>{
+          if (a === 'latest.html') return -1;
+          if (b === 'latest.html') return 1;
+          return b.localeCompare(a);
+        });
+        linksEl.innerHTML = names.length
+          ? names.map((name) => `<a href="../../${name}" target="_blank" rel="noopener noreferrer">${name}</a>`).join('')
+          : '<span class="muted">リンクが見つかりません。</span>';
+      })
+      .catch(() => { linksEl.innerHTML = '<span class="muted">取得に失敗しました。再読み込みしてください。</span>'; });
+
+    const drawerEl = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    const openMenu = document.getElementById('openMenu');
+    const closeMenu = document.getElementById('closeMenu');
+    const open = () => { drawerEl.classList.add('show'); overlay.classList.add('show'); drawerEl.setAttribute('aria-hidden', 'false'); };
+    const close = () => { drawerEl.classList.remove('show'); overlay.classList.remove('show'); drawerEl.setAttribute('aria-hidden', 'true'); };
+    openMenu?.addEventListener('click', open);
+    closeMenu?.addEventListener('click', close);
+    overlay?.addEventListener('click', close);
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+  </script>
+</body>
+
+</html>
