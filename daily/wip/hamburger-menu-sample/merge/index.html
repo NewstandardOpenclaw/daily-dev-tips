@@ -383,7 +383,7 @@ logging.info("processed=%d", len(rows))</code></pre>
       btnContainer.style.margin = '12px 0';
 
       const copyContentBtn = document.createElement('button');
-      copyContentBtn.innerText = '📋 トピックの内容をコピー';
+      copyContentBtn.innerText = 'トピックの内容をコピー';
       copyContentBtn.className = 'copy-btn';
       copyContentBtn.addEventListener('click', () => {
         const clone = details.cloneNode(true);
@@ -395,7 +395,7 @@ ${clone.innerText.trim()}`;
       });
 
       const copyRefBtn = document.createElement('button');
-      copyRefBtn.innerText = '🔗 参照リンクをコピー';
+      copyRefBtn.innerText = '参照リンクをコピー';
       copyRefBtn.className = 'copy-btn';
       copyRefBtn.addEventListener('click', () => {
         const links = Array.from(details.querySelectorAll('a[href]')).map(a => a.href).join('
@@ -406,7 +406,7 @@ ${links}`;
       });
 
       const copyTaskBtn = document.createElement('button');
-      copyTaskBtn.innerText = '📝 実践課題のサポートを依頼';
+      copyTaskBtn.innerText = '実践課題のサポートを依頼';
       copyTaskBtn.className = 'copy-btn';
       copyTaskBtn.style.backgroundColor = '#f0f9ff';
       copyTaskBtn.addEventListener('click', () => {
