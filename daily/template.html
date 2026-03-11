@@ -15,6 +15,9 @@
     .ask { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #d1d5db; font-size: 0.95rem; }
     .ask a { margin-right: 10px; }
     .copy-btn { border: 1px solid #d1d5db; background: #fff; border-radius: 8px; padding: 4px 8px; cursor: pointer; }
+    .topic-tools { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+    .tool-btn { border:1px solid #d1d5db; background:#fff; border-radius:10px; padding:8px 10px; cursor:pointer; font-size:0.95rem; text-align:left; }
+    .tool-btn.primary { background:#f0f9ff; }
     .muted { color: #6b7280; }
 
     .menu-btn { border:1px solid #d1d5db; background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer; margin-bottom:10px; }
@@ -367,14 +370,11 @@ logging.info("processed=%d", len(rows))</code></pre>
       const askArea = details.querySelector('.ask');
       const summaryText = details.querySelector('summary span')?.innerText || details.querySelector('summary').innerText.replace(/📋.*/, '');
       const btnContainer = document.createElement('div');
-      btnContainer.style.display = 'flex';
-      btnContainer.style.flexDirection = 'column';
-      btnContainer.style.gap = '8px';
-      btnContainer.style.margin = '15px 0';
+      btnContainer.className = 'topic-tools';
 
       const copyContentBtn = document.createElement('button');
-      copyContentBtn.innerText = '📋 トピックの内容をコピー';
-      copyContentBtn.className = 'copy-btn';
+      copyContentBtn.innerText = 'トピック内容をコピー';
+      copyContentBtn.className = 'tool-btn';
       copyContentBtn.style.width = '100%';
       copyContentBtn.addEventListener('click', () => {
         const clone = details.cloneNode(true);
@@ -384,8 +384,8 @@ logging.info("processed=%d", len(rows))</code></pre>
       });
 
       const copyRefBtn = document.createElement('button');
-      copyRefBtn.innerText = '🔗 参照リンクをコピー';
-      copyRefBtn.className = 'copy-btn';
+      copyRefBtn.innerText = '参照リンクをコピー';
+      copyRefBtn.className = 'tool-btn';
       copyRefBtn.addEventListener('click', () => {
         const links = Array.from(details.querySelectorAll('p a')).map(a => a.href).join('\n');
         const text = `【${summaryText.trim()}】\n${links}`;
@@ -393,9 +393,8 @@ logging.info("processed=%d", len(rows))</code></pre>
       });
 
       const copyTaskBtn = document.createElement('button');
-      copyTaskBtn.innerText = '📝 実践課題のサポートを依頼';
-      copyTaskBtn.className = 'copy-btn';
-      copyTaskBtn.style.backgroundColor = '#f0f9ff';
+      copyTaskBtn.innerText = '演習依頼文をコピー';
+      copyTaskBtn.className = 'tool-btn primary';
       copyTaskBtn.addEventListener('click', () => {
         const taskText = Array.from(details.querySelectorAll('li')).find(li => li.innerText.includes('課題'))?.innerText || 'このトピックの実践課題';
         const text = `以下の課題について、やってください。\n\n【対象】${summaryText.trim()}\n【課題】${taskText.trim()}`;
