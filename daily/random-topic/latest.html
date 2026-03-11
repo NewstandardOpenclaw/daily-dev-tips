@@ -1,0 +1,86 @@
+<!doctype html><html lang="ja"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Daily Dev Tips Random</title>
+<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.7;margin:24px;color:#1f2937}details{border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px;margin:12px 0;background:#fafafa}summary{font-weight:700;cursor:pointer}.ask{margin-top:10px;padding-top:8px;border-top:1px dashed #d1d5db;font-size:.95rem}.copy-btn{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer}</style></head><body>
+<h1>Daily Dev Tips（Random Test）</h1><p><strong>日付:</strong> 2026-03-11 (JST)</p><h2>目次</h2><ul>
+    <li><a href="#t1" target="_blank" rel="noopener noreferrer">Edge Functions最適化</a></li>
+    <li><a href="#t2" target="_blank" rel="noopener noreferrer">メール配信品質</a></li>
+    <li><a href="#t3" target="_blank" rel="noopener noreferrer">テストデータ戦略</a></li>
+    <li><a href="#t4" target="_blank" rel="noopener noreferrer">バッチ最適化</a></li>
+    <li><a href="#t5" target="_blank" rel="noopener noreferrer">Webhook堅牢化</a></li>
+    <li><a href="#t6" target="_blank" rel="noopener noreferrer">認証設計</a></li>
+    <li><a href="#t7" target="_blank" rel="noopener noreferrer">GraphQL設計</a></li>
+    <li><a href="#t8" target="_blank" rel="noopener noreferrer">IaCレビュー</a></li>
+    <li><a href="#t9" target="_blank" rel="noopener noreferrer">DB接続管理</a></li>
+    <li><a href="#t10" target="_blank" rel="noopener noreferrer">非同期ジョブ設計</a></li>
+</ul>
+  <section id="t1"><details open><summary>Edge Functions最適化（今日: コールドスタート対策と依存削減）</summary><ul>
+    <li><strong>概要:</strong> コールドスタート対策と依存削減 を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「Edge Functions最適化の『コールドスタート対策と依存削減』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="Edge Functions最適化の『コールドスタート対策と依存削減』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+  <section id="t2"><details ><summary>メール配信品質（今日: 到達率改善と配信停止導線）</summary><ul>
+    <li><strong>概要:</strong> 到達率改善と配信停止導線 を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「メール配信品質の『到達率改善と配信停止導線』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="メール配信品質の『到達率改善と配信停止導線』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+  <section id="t3"><details ><summary>テストデータ戦略（今日: Factory最小化とfixtureの使い分け）</summary><ul>
+    <li><strong>概要:</strong> Factory最小化とfixtureの使い分け を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「テストデータ戦略の『Factory最小化とfixtureの使い分け』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="テストデータ戦略の『Factory最小化とfixtureの使い分け』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+  <section id="t4"><details ><summary>バッチ最適化（今日: 分割実行とチェックポイント管理）</summary><ul>
+    <li><strong>概要:</strong> 分割実行とチェックポイント管理 を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「バッチ最適化の『分割実行とチェックポイント管理』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="バッチ最適化の『分割実行とチェックポイント管理』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+  <section id="t5"><details ><summary>Webhook堅牢化（今日: 再送・重複受信を前提にidempotent設計）</summary><ul>
+    <li><strong>概要:</strong> 再送・重複受信を前提にidempotent設計 を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「Webhook堅牢化の『再送・重複受信を前提にidempotent設計』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="Webhook堅牢化の『再送・重複受信を前提にidempotent設計』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+  <section id="t6"><details ><summary>認証設計（今日: 短命トークンとrefresh戦略の安全運用）</summary><ul>
+    <li><strong>概要:</strong> 短命トークンとrefresh戦略の安全運用 を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「認証設計の『短命トークンとrefresh戦略の安全運用』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="認証設計の『短命トークンとrefresh戦略の安全運用』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+  <section id="t7"><details ><summary>GraphQL設計（今日: N+1回避とスキーマ境界の明確化）</summary><ul>
+    <li><strong>概要:</strong> N+1回避とスキーマ境界の明確化 を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「GraphQL設計の『N+1回避とスキーマ境界の明確化』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="GraphQL設計の『N+1回避とスキーマ境界の明確化』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+  <section id="t8"><details ><summary>IaCレビュー（今日: Terraform差分の危険変更検知）</summary><ul>
+    <li><strong>概要:</strong> Terraform差分の危険変更検知 を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「IaCレビューの『Terraform差分の危険変更検知』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="IaCレビューの『Terraform差分の危険変更検知』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+  <section id="t9"><details ><summary>DB接続管理（今日: プール設定とタイムアウト調整）</summary><ul>
+    <li><strong>概要:</strong> プール設定とタイムアウト調整 を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「DB接続管理の『プール設定とタイムアウト調整』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="DB接続管理の『プール設定とタイムアウト調整』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+  <section id="t10"><details ><summary>非同期ジョブ設計（今日: リトライ条件とDLQ設計の分離）</summary><ul>
+    <li><strong>概要:</strong> リトライ条件とDLQ設計の分離 を中心に、短時間で効く改善を1つ実施する。</li>
+    <li><strong>なぜ面白いか:</strong> 小さな運用改善が障害率と手戻りを下げる。</li>
+    <li><strong>現場での使いどころ:</strong> 既存運用を崩さず、日次で改善を積み上げるとき。</li>
+    <li><strong>ハマりどころ:</strong> 対応手順が属人化し、再現できない。</li>
+    <li><strong>今日の実践ミニ課題:</strong> 1ケースを選んで before/after を記録する。</li>
+  </ul><div class="ask">質問テンプレ: 「非同期ジョブ設計の『リトライ条件とDLQ設計の分離』を、明日から使える実装手順で提案して。」 <button class="copy-btn" data-copy="非同期ジョブ設計の『リトライ条件とDLQ設計の分離』を、明日から使える実装手順で提案して。">コピー</button></div></details></section>
+<script>document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(btn.dataset.copy||'');const t=btn.textContent;btn.textContent='コピー済み';setTimeout(()=>btn.textContent=t,1200)}catch(e){console.error(e)}}));</script>
+</body></html>
