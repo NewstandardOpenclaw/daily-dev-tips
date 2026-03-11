@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Dev Tips - Random Topic</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.7; margin: 24px; color:#1f2937; }
+    h1,h2 { line-height:1.3; }
+    details { border:1px solid #e5e7eb; border-radius:10px; padding:10px 14px; margin:12px 0; background:#fafafa; }
+    summary { font-weight:700; cursor:pointer; }
+    .ask { margin-top:10px; padding-top:8px; border-top:1px dashed #d1d5db; font-size:0.95rem; }
+    .copy-btn { border:1px solid #d1d5db; background:#fff; border-radius:8px; padding:4px 8px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h1>Daily Dev Tips（Random Topic版）</h1>
+  <p><strong>日付:</strong> 2026-03-11 (JST)</p>
+
+  <h2>目次</h2>
+  <ul>
+    <li><a href="#obs" target="_blank" rel="noopener noreferrer">Observability Lite（1時間で監視導線を作る）</a></li>
+    <li><a href="#api-contract" target="_blank" rel="noopener noreferrer">API契約テスト（壊さないAPI運用）</a></li>
+    <li><a href="#cache" target="_blank" rel="noopener noreferrer">キャッシュ戦略（TTL設計の勘所）</a></li>
+    <li><a href="#feature-flag" target="_blank" rel="noopener noreferrer">Feature Flag運用（安全リリース）</a></li>
+    <li><a href="#db-migration" target="_blank" rel="noopener noreferrer">DBマイグレーション（無停止変更）</a></li>
+    <li><a href="#incident" target="_blank" rel="noopener noreferrer">インシデント初動（15分テンプレ）</a></li>
+    <li><a href="#review" target="_blank" rel="noopener noreferrer">コードレビュー高速化（観点固定）</a></li>
+    <li><a href="#security-header" target="_blank" rel="noopener noreferrer">Webセキュリティヘッダ（最低限セット）</a></li>
+    <li><a href="#cost" target="_blank" rel="noopener noreferrer">クラウドコスト可視化（まず見る3指標）</a></li>
+    <li><a href="#ai-workflow" target="_blank" rel="noopener noreferrer">AIワークフロー設計（人間の確認点を残す）</a></li>
+  </ul>
+
+  <section id="obs"><details open><summary>Observability Lite（1時間で監視導線を作る）</summary><ul>
+    <li><strong>概要:</strong> メトリクス・ログ・アラートを最小構成で接続する。</li><li><strong>なぜ面白いか:</strong> 障害時の「何見ればいい？」が消える。</li><li><strong>現場での使いどころ:</strong> 新規サービス立ち上げ初日。</li><li><strong>ハマりどころ:</strong> 指標だけ作って通知先を決めない。</li><li><strong>ミニ課題:</strong> 5xxアラートをSlackに飛ばす。</li></ul>
+    <div class="ask">質問テンプレ:「最小の監視導線を1時間で組む手順を作って」 <button class="copy-btn" data-copy="最小の監視導線を1時間で組む手順を作って">コピー</button></div></details></section>
+
+  <section id="api-contract"><details><summary>API契約テスト（壊さないAPI運用）</summary><ul>
+    <li><strong>概要:</strong> OpenAPIを基準にレスポンス互換性を検証する。</li><li><strong>なぜ面白いか:</strong> フロント破壊をリリース前に止められる。</li><li><strong>現場:</strong> 複数クライアントがぶら下がるAPI。</li><li><strong>ハマりどころ:</strong> サンプルJSONだけで安心する。</li><li><strong>ミニ課題:</strong> 主要エンドポイント2本を契約テスト化。</li></ul>
+    <div class="ask">質問テンプレ:「API契約テストの導入ステップを最短で教えて」 <button class="copy-btn" data-copy="API契約テストの導入ステップを最短で教えて">コピー</button></div></details></section>
+
+  <section id="cache"><details><summary>キャッシュ戦略（TTL設計の勘所）</summary><ul>
+    <li><strong>概要:</strong> 更新頻度と許容遅延からTTLを決める。</li><li><strong>なぜ面白いか:</strong> DB負荷を落としつつ鮮度を維持できる。</li><li><strong>現場:</strong> 一覧API・ランキング表示。</li><li><strong>ハマりどころ:</strong> 一律TTLで事故る。</li><li><strong>ミニ課題:</strong> 1APIだけTTL最適化して計測。</li></ul>
+    <div class="ask">質問テンプレ:「このAPIのTTLをどう決めるべきかレビューして」 <button class="copy-btn" data-copy="このAPIのTTLをどう決めるべきかレビューして">コピー</button></div></details></section>
+
+  <section id="feature-flag"><details><summary>Feature Flag運用（安全リリース）</summary><ul>
+    <li><strong>概要:</strong> 機能ON/OFFを環境・ユーザー単位で制御する。</li><li><strong>なぜ面白いか:</strong> ロールバックが秒でできる。</li><li><strong>現場:</strong> 新機能の段階公開。</li><li><strong>ハマりどころ:</strong> 使い終わったflagを放置。</li><li><strong>ミニ課題:</strong> 期限付きflag運用ルールを作る。</li></ul>
+    <div class="ask">質問テンプレ:「Feature Flagの運用ルールを簡潔に設計して」 <button class="copy-btn" data-copy="Feature Flagの運用ルールを簡潔に設計して">コピー</button></div></details></section>
+
+  <section id="db-migration"><details><summary>DBマイグレーション（無停止変更）</summary><ul>
+    <li><strong>概要:</strong> expand/contractで段階的にスキーマ変更する。</li><li><strong>なぜ面白いか:</strong> 本番停止リスクを減らせる。</li><li><strong>現場:</strong> カラム分割・型変更。</li><li><strong>ハマりどころ:</strong> 一発変更でロック地獄。</li><li><strong>ミニ課題:</strong> 既存変更案を2段階化してみる。</li></ul>
+    <div class="ask">質問テンプレ:「このDB変更を無停止でやる手順に直して」 <button class="copy-btn" data-copy="このDB変更を無停止でやる手順に直して">コピー</button></div></details></section>
+
+  <section id="incident"><details><summary>インシデント初動（15分テンプレ）</summary><ul>
+    <li><strong>概要:</strong> 影響範囲確認→暫定対応→連絡の順を固定する。</li><li><strong>なぜ面白いか:</strong> 焦っても品質が崩れにくい。</li><li><strong>現場:</strong> 夜間障害・急な遅延。</li><li><strong>ハマりどころ:</strong> 原因調査を先にやりすぎる。</li><li><strong>ミニ課題:</strong> 初動テンプレをチームに共有。</li></ul>
+    <div class="ask">質問テンプレ:「障害初動テンプレを15分運用向けに作って」 <button class="copy-btn" data-copy="障害初動テンプレを15分運用向けに作って">コピー</button></div></details></section>
+
+  <section id="review"><details><summary>コードレビュー高速化（観点固定）</summary><ul>
+    <li><strong>概要:</strong> 可読性・安全性・性能の観点を固定する。</li><li><strong>なぜ面白いか:</strong> レビュー品質が人依存しにくい。</li><li><strong>現場:</strong> PRが滞留している時。</li><li><strong>ハマりどころ:</strong> 好みレビューになる。</li><li><strong>ミニ課題:</strong> 5項目チェックリスト作成。</li></ul>
+    <div class="ask">質問テンプレ:「レビュー観点を5項目に絞って作って」 <button class="copy-btn" data-copy="レビュー観点を5項目に絞って作って">コピー</button></div></details></section>
+
+  <section id="security-header"><details><summary>Webセキュリティヘッダ（最低限セット）</summary><ul>
+    <li><strong>概要:</strong> CSP/XFO/XCTO/Referrer-Policyを整理導入。</li><li><strong>なぜ面白いか:</strong> 小コストで事故リスクを下げる。</li><li><strong>現場:</strong> 公開Webアプリ全般。</li><li><strong>ハマりどころ:</strong> CSPを厳しくしすぎて壊す。</li><li><strong>ミニ課題:</strong> report-onlyでCSP試験運用。</li></ul>
+    <div class="ask">質問テンプレ:「最小のセキュリティヘッダ構成を提案して」 <button class="copy-btn" data-copy="最小のセキュリティヘッダ構成を提案して">コピー</button></div></details></section>
+
+  <section id="cost"><details><summary>クラウドコスト可視化（まず見る3指標）</summary><ul>
+    <li><strong>概要:</strong> 日次コスト・サービス別・急増アラートを先に置く。</li><li><strong>なぜ面白いか:</strong> 「気づいたら高い」を防げる。</li><li><strong>現場:</strong> 小規模チームの運用。</li><li><strong>ハマりどころ:</strong> 月次だけ見て遅れる。</li><li><strong>ミニ課題:</strong> 前日比アラートを設定。</li></ul>
+    <div class="ask">質問テンプレ:「小規模向けクラウドコスト監視を設計して」 <button class="copy-btn" data-copy="小規模向けクラウドコスト監視を設計して">コピー</button></div></details></section>
+
+  <section id="ai-workflow"><details><summary>AIワークフロー設計（人間の確認点を残す）</summary><ul>
+    <li><strong>概要:</strong> 自動化の前に人間レビューゲートを定義する。</li><li><strong>なぜ面白いか:</strong> 速度と安全性を両立できる。</li><li><strong>現場:</strong> PR要約・テスト生成・一次分類。</li><li><strong>ハマりどころ:</strong> 全自動化して誤判定が拡散。</li><li><strong>ミニ課題:</strong> 承認必須の境界を明文化。</li></ul>
+    <div class="ask">質問テンプレ:「AIワークフローに人間確認点を設計して」 <button class="copy-btn" data-copy="AIワークフローに人間確認点を設計して">コピー</button></div></details></section>
+
+  <script>
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(btn.dataset.copy || '');
+          const t = btn.textContent;
+          btn.textContent = 'コピー済み';
+          setTimeout(() => btn.textContent = t, 1200);
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
