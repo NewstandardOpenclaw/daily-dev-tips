@@ -7,34 +7,58 @@
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 24px; line-height: 1.7; color: #1f2937; }
     a { color: #2563eb; }
+    .muted { color: #6b7280; }
   </style>
 </head>
 <body>
   <h1>Daily Dev Tips</h1>
-  <p>配信ファイル一覧（新しい順）</p>
-  <ul>
-    <li><a href="./latest.html">latest.html</a></li>
-    <li><a href="./vcard-link-sample.html">vcard-link-sample.html</a></li>
-    <li><a href="./template.html">template.html</a></li>
-    <li><a href="./2026-03-11_08-00-jst.html">2026-03-11_08-00-jst.html</a></li>
-    <li><a href="./2026-03-10_08-00-jst.html">2026-03-10_08-00-jst.html</a></li>
-    <li><a href="./2026-03-09_08-00-jst.html">2026-03-09_08-00-jst.html</a></li>
-    <li><a href="./2026-03-08_08-00-jst.html">2026-03-08_08-00-jst.html</a></li>
-    <li><a href="./2026-03-07_08-00-jst.html">2026-03-07_08-00-jst.html</a></li>
-    <li><a href="./2026-03-07_00-16-jst.html">2026-03-07_00-16-jst.html</a></li>
-    <li><a href="./2026-03-06_08-00-jst.html">2026-03-06_08-00-jst.html</a></li>
-    <li><a href="./2026-03-05_08-00-jst.html">2026-03-05_08-00-jst.html</a></li>
-    <li><a href="./2026-03-04_08-00-jst.html">2026-03-04_08-00-jst.html</a></li>
-    <li><a href="./2026-03-03_08-00-jst.html">2026-03-03_08-00-jst.html</a></li>
-    <li><a href="./2026-03-02_08-00-jst.html">2026-03-02_08-00-jst.html</a></li>
-    <li><a href="./2026-03-01_08-00-jst.html">2026-03-01_08-00-jst.html</a></li>
-    <li><a href="./2026-02-28_08-00-jst.html">2026-02-28_08-00-jst.html</a></li>
-    <li><a href="./2026-02-27_08-00-jst.html">2026-02-27_08-00-jst.html</a></li>
-    <li><a href="./2026-02-26_08-00-jst.html">2026-02-26_08-00-jst.html</a></li>
-    <li><a href="./2026-02-25.html">2026-02-25.html</a></li>
-    <li><a href="./2026-02-25-ver3.html">2026-02-25-ver3.html</a></li>
-    <li><a href="./2026-02-25-ver2.html">2026-02-25-ver2.html</a></li>
-    <li><a href="./2026-02-24.html">2026-02-24.html</a></li>
-  </ul>
+  <p class="muted">配信ファイル一覧（自動生成）</p>
+  <ul id="list"><li>読み込み中...</li></ul>
+
+  <script>
+    const owner = 'NewstandardOpenclaw';
+    const repo = 'daily-dev-tips';
+    const path = 'daily';
+    const branch = 'main';
+
+    const api = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
+    const listEl = document.getElementById('list');
+
+    const isTarget = (name) => {
+      if (!name.endsWith('.html')) return false;
+      if (name === 'index.html' || name === 'template.html') return false;
+      return true;
+    };
+
+    fetch(api)
+      .then((res) => {
+        if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+        return res.json();
+      })
+      .then((items) => {
+        const names = items
+          .filter((x) => x.type === 'file')
+          .map((x) => x.name)
+          .filter(isTarget)
+          .sort((a, b) => {
+            if (a === 'latest.html') return -1;
+            if (b === 'latest.html') return 1;
+            return b.localeCompare(a);
+          });
+
+        if (!names.length) {
+          listEl.innerHTML = '<li>表示できるHTMLがありません。</li>';
+          return;
+        }
+
+        listEl.innerHTML = names
+          .map((name) => `<li><a href="./${name}">${name}</a></li>`)
+          .join('');
+      })
+      .catch((e) => {
+        console.error(e);
+        listEl.innerHTML = '<li>一覧の取得に失敗しました。時間をおいて再読み込みしてください。</li>';
+      });
+  </script>
 </body>
 </html>
