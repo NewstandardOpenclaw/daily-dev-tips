@@ -72,6 +72,58 @@
     <div class="ask">質問テンプレ:「AIワークフローに人間確認点を設計して」 <button class="copy-btn" data-copy="AIワークフローに人間確認点を設計して">コピー</button></div></details></section>
 
   <script>
+
+    document.querySelectorAll('details').forEach(details => {
+      const askArea = details.querySelector('.ask');
+      if (!askArea) return;
+      const summaryText = details.querySelector('summary')?.innerText?.trim() || 'トピック';
+
+      const box = document.createElement('div');
+      box.style.display = 'flex';
+      box.style.flexDirection = 'column';
+      box.style.gap = '8px';
+      box.style.margin = '12px 0';
+
+      const b1 = document.createElement('button');
+      b1.className = 'copy-btn';
+      b1.textContent = 'トピックの内容をコピー';
+      b1.addEventListener('click', async () => {
+        const clone = details.cloneNode(true);
+        clone.querySelectorAll('button, .ask, summary').forEach(el => el.remove());
+        const text = `【${summaryText}】
+
+${clone.innerText.trim()}`;
+        await navigator.clipboard.writeText(text);
+        const t=b1.textContent; b1.textContent='コピー済み'; setTimeout(()=>b1.textContent=t,1200);
+      });
+
+      const b2 = document.createElement('button');
+      b2.className = 'copy-btn';
+      b2.textContent = '参照リンクをコピー';
+      b2.addEventListener('click', async () => {
+        const links = Array.from(details.querySelectorAll('a[href]')).map(a=>a.href).join('
+');
+        await navigator.clipboard.writeText(`【${summaryText}】
+${links}`);
+        const t=b2.textContent; b2.textContent='コピー済み'; setTimeout(()=>b2.textContent=t,1200);
+      });
+
+      const b3 = document.createElement('button');
+      b3.className = 'copy-btn';
+      b3.textContent = '実践課題のサポートを依頼';
+      b3.addEventListener('click', async () => {
+        const taskText = Array.from(details.querySelectorAll('li')).find(li => li.innerText.includes('ミニ課題'))?.innerText || 'このトピックの実践ミニ課題';
+        await navigator.clipboard.writeText(`以下の課題について、やってください。
+
+【対象】${summaryText}
+【課題】${taskText.trim()}`);
+        const t=b3.textContent; b3.textContent='コピー済み'; setTimeout(()=>b3.textContent=t,1200);
+      });
+
+      box.append(b1,b2,b3);
+      askArea.parentNode.insertBefore(box, askArea);
+    });
+
     document.querySelectorAll('.copy-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         try {
