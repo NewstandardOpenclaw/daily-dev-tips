@@ -151,8 +151,7 @@ ${clone.innerText.trim()}`, b1);
 
   const b2=document.createElement('button'); b2.className='tool-btn'; b2.textContent='参照リンクをコピー';
   b2.onclick=()=>{
-    const links=Array.from(details.querySelectorAll('a[href]')).map(a=>a.href).join('
-');
+    const links=Array.from(details.querySelectorAll('a[href]')).map(a=>a.href).join('\n');
     copyToClipboard(`【${summary}】
 ${links}`, b2);
   };
