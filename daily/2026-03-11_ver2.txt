@@ -1,0 +1,620 @@
+Daily Dev Tips body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.7; margin: 24px; color: #1f2937; }
+ h1,h2 { line-height: 1.3; }
+ details { border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 14px; margin: 12px 0; background: #fafafa; }
+ summary { font-weight: 700; cursor: pointer; }
+ code,pre { background: #f3f4f6; border-radius: 8px; }
+ pre { padding: 10px; overflow: auto; }
+ .ask { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #d1d5db; font-size: 0.95rem; }
+ .ask a { margin-right: 10px; }
+ .copy-btn { border: 1px solid #d1d5db; background: #fff; border-radius: 8px; padding: 4px 8px; cursor: pointer; }
+ .topic-tools { display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+ .tool-btn { border:1px solid #d1d5db; background:#fff; border-radius:10px; padding:8px 10px; cursor:pointer; font-size:0.95rem; text-align:left; }
+ .tool-btn.primary { background:#f0f9ff; }
+ .muted { color: #6b7280; }
+
+ .menu-btn { border:1px solid #d1d5db; background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer; margin-bottom:10px; }
+ .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 30; }
+ .overlay.show { opacity: 1; pointer-events: auto; }
+ .drawer { position: fixed; top: 0; left: 0; height: 100dvh; width: min(88vw, 360px); background: #fff; border-right: 1px solid #e5e7eb; transform: translateX(-100%); transition: transform .2s ease; z-index: 40; display: flex; flex-direction: column; }
+ .drawer.show { transform: translateX(0); }
+ .drawer-head { display:flex; align-items:center; justify-content:space-between; padding: 14px; border-bottom: 1px solid #e5e7eb; font-weight:700; }
+ .close-btn { border:1px solid #d1d5db; background:#fff; border-radius:8px; width:34px; height:34px; cursor:pointer; }
+ .drawer-body { padding: 10px 14px 16px; overflow:auto; flex:1; }
+ .drawer-body a { display:block; color:#2563eb; text-decoration:none; padding:8px 0; border-bottom:1px dashed #eef2f7; word-break:break-all; }
+ .drawer-body a:hover { text-decoration: underline; } ☰ 
+☰ ✕ 
+
+latest + 過去HTML（新しい順） 
+読み込み中... 
+
+Daily Dev Tips 
+
+日付: 2026-03-11 (JST) / wip sample 
+
+目次 
+
+Laravel（複数サブトピック） 
+
+Laravelユニットテスト 
+
+Vue（Vue2中心 + Vue3補足） 
+
+Docker 
+
+AWS（開発者向け基礎→実務） 
+
+React 
+
+TypeScript 
+
+PHP関数 / 配列ヘルパー 
+
+Lodash 
+
+HTML & CSS（必須基礎） 
+
+フロントエンドビルド最適化 
+
+Python実用活用 
+
+Zapier + n8n比較 
+
+OpenClaw 
+
+SQL実践（DB設計・Index・EXPLAIN） 
+
+設計リファクタ（責務分離・命名・レビュー観点） 
+
+監視・運用（Sentry・ログ設計・障害初動） 
+
+LLMアプリ設計（RAG・Tool Calling・Agent） 
+
+プロンプト設計実務（評価・再現性） 
+
+AIコスト最適化（トークン・キャッシュ・モデル選定） 
+
+AI安全性（PII・権限・プロンプトインジェクション対策） 
+
+AI×開発生産性（PR要約・テスト生成・障害一次切り分け） 
+
+Laravel（今日のサブトピック: Eloquent集約 + SQL最適化 / Queue再試行設計） 
+
+概要: Eloquentで集計を安全に書きつつ、実クエリを見てIndexとEXPLAINで詰める日。 
+
+なぜ面白いか: 「読みやすいLaravelコード」と「速いSQL」を両立できると、実装の説得力が一段上がる。 
+
+現場での使いどころ: ダッシュボード集計APIで withCount() と複合Indexを合わせてP95を短縮。 
+
+ハマりどころ: Eloquent側だけ調整して満足し、ソート列のIndex不足で本番だけ遅い。 
+
+もう1テーマ: Queueの backoff と tries を明示し、外部API障害時の連鎖失敗を防ぐ。 
+
+ミニ課題: 既存1エンドポイントで「Eloquent変更前後 + EXPLAIN + レスポンスタイム」を比較して記録。 
+
+公式リンク: Eloquent・Queue・DB Queryの3本を読み、現場コードに1つ反映する。 
+
+$reports = Order::query()
+ ->selectRaw('user_id, count(*) as total')
+ ->whereBetween('created_at', [$from, $to])
+ ->groupBy('user_id')
+ ->orderByDesc('total')
+ ->limit(20)
+ ->get(); 
+
+参考: Eloquent / Query Builder / Queues 
+
+質問する: ChatGPT Gemini テンプレ:「このLaravel集計クエリをEloquent可読性を保ったまま高速化したい。Index案とEXPLAIN読み方も教えて」 コピー 
+
+Laravelユニットテスト（境界値 + モック最小化） 
+
+概要: Unitは純粋ロジックに集中し、外部I/Oは薄いFake層で切る。 
+
+なぜ面白いか: テストが速くなるほど、修正→実行→改善のサイクルが回る。 
+
+現場での使いどころ: 請求計算・割引判定・締め処理など、仕様が変わりやすい箇所の防波堤。 
+
+ハマりどころ: Mockを増やしすぎて実装追従テストになり、リファクタ耐性が落ちる。 
+
+観点: 正常系だけでなく「0件/境界日付/上限超え」の3点を必ず入れる。 
+
+ミニ課題: 既存Serviceに境界値テスト3件を追加し、失敗させてから通す。 
+
+公式リンク: Laravel Testing + PHPUnit assertionsを再確認。 
+
+参考: Laravel Testing / PHPUnit 
+
+質問する: ChatGPT Gemini テンプレ:「このLaravelテスト設計で不足している境界値ケースを洗い出して」 コピー 
+
+Vue（Vue2主軸: computed/watch整理 + Vue3移行の足場） 
+
+概要: Vue2のOptions APIで責務分離し、将来のComposition API移行を楽にする。 
+
+なぜ面白いか: 今の保守性を上げながら、移行コストを先払いで下げられる。 
+
+現場での使いどころ: フォーム入力の整形はcomputed、API再取得や副作用はwatchに限定。 
+
+ハマりどころ: deep watchを多用し、予期せぬ再描画とデバッグ困難を招く。 
+
+Vue3補足: ref/computed/watch に置き換える際、責務境界が明確だと移植が速い。 
+
+ミニ課題: Vue2コンポーネント1つでwatchを1件削減し、computedへ置換。 
+
+公式リンク: Vue2 guideとVue3 essentialsを併読。 
+
+参考: Vue2 Computed/Watch / Vue3 Watchers 
+
+質問する: ChatGPT Gemini テンプレ:「このVue2コードをVue3移行しやすい形に整理して。watch削減案も欲しい」 コピー 
+
+Docker（開発速度を落とさないイメージ設計） 
+
+概要: マルチステージ + キャッシュ戦略で、開発とCIの両方を速く安定させる。 
+
+なぜ面白いか: 「動くけど遅い」環境を、誰でも同じ速度で回せるようにできる。 
+
+現場での使いどころ: Node/PHP混在プロジェクトで依存更新時の再ビルド時間を短縮。 
+
+ハマりどころ: build contextが肥大化し、無関係ファイル変更でキャッシュ崩壊。 
+
+観点: .dockerignore整備、依存インストール層の固定、runtimeイメージ最小化。 
+
+ミニ課題: 直近Dockerfileを1本見直し、ビルド時間をbefore/afterで計測。 
+
+公式リンク: Build cacheとCompose docsを確認。 
+
+参考: Docker Build Cache / Docker Compose 
+
+質問する: ChatGPT Gemini テンプレ:「このDockerfileのレイヤー順を最適化して、開発とCIの両面で速くしたい」 コピー 
+
+AWS（基礎→実務: IAM最小権限 / CloudWatch運用導線） 
+
+概要: IAM最小権限を起点に、監視ログ導線を最初から設計する。 
+
+なぜ面白いか: セキュリティと運用性を同時に上げると、障害時の復旧速度が変わる。 
+
+現場での使いどころ: 新規環境で「誰が何をできるか」と「どこを見れば異常かわかるか」を先に固定。 
+
+ハマりどころ: とりあえずAdminで開始し、そのまま本番まで残る。 
+
+実務ポイント: CloudWatchアラームは「閾値」だけでなく「通知先と初動手順」までセット。 
+
+ミニ課題: 開発者ロール1つから不要権限を削り、アラーム1つを運用Runbookに紐づけ。 
+
+公式リンク: IAM user guide / CloudWatch docs。 
+
+参考: IAM / CloudWatch 
+
+質問する: ChatGPT Gemini テンプレ:「このAWS構成を最小権限に近づけつつ、運用で困らない設計にしたい」 コピー 
+
+React（状態設計と再レンダリング最適化） 
+
+概要: stateを最小単位で持ち、派生値は計算に寄せる設計を徹底する。 
+
+なぜ面白いか: 無駄な再レンダリングが減ると、体感速度と可読性が同時に上がる。 
+
+現場での使いどころ: 一覧 + フィルタ + モーダル構成で責務分離しやすい。 
+
+ハマりどころ: グローバルstateに寄せすぎて、更新範囲が肥大化する。 
+
+実務ポイント: memo化は「測ってから」。先にprops設計を見直す。 
+
+ミニ課題: 1画面で不要stateを2つ削り、derived stateへ置換。 
+
+公式リンク: React learnのstate管理章を再確認。 
+
+参考: Managing State / useMemo 
+
+質問する: ChatGPT Gemini テンプレ:「このReactコンポーネントのstate設計を見直して、再レンダリングを減らしたい」 コピー 
+
+TypeScript（型境界を先に決める実務） 
+
+概要: API入出力の型境界を固定し、内部ロジックの安全性を上げる。 
+
+なぜ面白いか: 仕様の曖昧さが型エラーとして早期に出る。 
+
+現場での使いどころ: フロントAPIクライアント層でunknown→narrowingを徹底。 
+
+ハマりどころ: anyの常用で、実質JavaScript化して恩恵を失う。 
+
+実務ポイント: zod等のruntime validationと型推論を組み合わせると堅い。 
+
+ミニ課題: unknown入力の型ガードを1つ追加し、例外ケースを明示。 
+
+公式リンク: Handbook narrowing / utility typesを確認。 
+
+参考: Narrowing / Utility Types 
+
+質問する: ChatGPT Gemini テンプレ:「このTypeScript実装の型境界を強くしたい。any削減と型ガード案をください」 コピー 
+
+PHP関数 / 配列ヘルパー（可読性と速度の両立） 
+
+概要: array_*関数とCollectionを意図で使い分け、変換処理を読みやすく保つ。 
+
+なぜ面白いか: 同じ処理でも「意図が伝わる書き方」にするとレビューが速い。 
+
+現場での使いどころ: APIレスポンス整形、CSV変換、集計前データ整備。 
+
+ハマりどころ: ネストした無名関数で可読性が下がり、バグ混入が増える。 
+
+実務ポイント: 変換の段階を分け、途中結果を変数で残すと追跡しやすい。 
+
+ミニ課題: 複雑な配列変換1本を関数分割し、レビューしやすくする。 
+
+公式リンク: PHP array関数 / Laravel Collections。 
+
+参考: PHP配列関数 / Laravel Collections 
+
+質問する: ChatGPT Gemini テンプレ:「このPHP配列処理を可読性優先でリファクタして。速度劣化しない案で」 コピー 
+
+Lodash（使う/使わないの判断基準） 
+
+概要: lodashは「短くなる」だけでなく、バンドル影響まで見て採用判断する。 
+
+なぜ面白いか: 小さな関数選定が、フロント性能と保守コストに効く。 
+
+現場での使いどころ: debounce・groupBy・deep clone等、ネイティブで冗長な箇所。 
+
+ハマりどころ: 全量importで初期読み込みが重くなる。 
+
+実務ポイント: ESM個別import + bundle analyzerで定量確認。 
+
+ミニ課題: lodash依存1箇所をネイティブ置換し、可読性/サイズ比較を記録。 
+
+公式リンク: Lodash docsとwebpack tree shaking。 
+
+参考: Lodash / Tree Shaking 
+
+質問する: ChatGPT Gemini テンプレ:「このLodash利用は残すべき？ネイティブ置換含めて判断して」 コピー 
+
+HTML & CSS（必須基礎: セマンティクス / レイアウト崩れ予防） 
+
+概要: セマンティックタグ + box model理解で、崩れにくいUI土台を作る。 
+
+なぜ面白いか: アクセシビリティとSEO、保守性を同時に改善できる。 
+
+現場での使いどころ: LP・管理画面・メールテンプレの基本設計。 
+
+ハマりどころ: margin相殺やbox-sizing未設定で想定外の幅になる。 
+
+実務ポイント: 初期化CSSで box-sizing:border-box を先に入れる。 
+
+ミニ課題: 既存1ページをsemanticタグへ置換し、見出し階層を整理。 
+
+公式リンク: MDN semantics / box model。 
+
+参考: MDN Semantics / MDN Box Model 
+
+質問する: ChatGPT Gemini テンプレ:「このHTML/CSSの崩れやすい点を特定して、最小修正案を出して」 コピー 
+
+フロントエンドビルド最適化（webpack/Vite/npm/yarn） 
+
+概要: 起動遅延は「依存解決」「変換」「監視」「キャッシュ」に分けて測る。 
+
+なぜ面白いか: 待ち時間短縮はそのまま開発体験の改善になる。 
+
+現場での使いどころ: モノレポで初回起動・HMR遅延のボトルネック特定。 
+
+ハマりどころ: 感覚で設定を変え、効果検証なしで複雑化する。 
+
+実務ポイント: 変更は1要素ずつ、 time 計測を3回平均で比較。 
+
+ミニ課題: source map設定を2種比較し、DXと速度の妥協点を決める。 
+
+公式リンク: Vite performance / webpack build performance。 
+
+参考: Vite Performance / webpack Build Performance 
+
+質問する: ChatGPT Gemini テンプレ:「このビルド計測ログを見て、改善優先順位をつけてほしい」 コピー 
+
+Python実用活用（定型業務の自動化） 
+
+概要: CSV/JSON/HTTP処理を小さく組み合わせ、反復作業をスクリプト化する。 
+
+なぜ面白いか: 10分の作業を毎日なくせると、年単位で大きな差になる。 
+
+現場での使いどころ: データ整形、定時レポート作成、API連携バッチ。 
+
+ハマりどころ: 例外処理不足で一部データ欠損に気づけない。 
+
+実務ポイント: 入出力件数の一致チェックと失敗ログを必ず残す。 
+
+ミニ課題: 1スクリプトにリトライとログ出力を追加して再実行可能にする。 
+
+公式リンク: csv/json/logging標準ライブラリ。 
+
+import logging
+logging.basicConfig(level=logging.INFO)
+# 件数チェックを最後に必ず出力
+logging.info("processed=%d", len(rows)) 
+
+参考: csv / logging 
+
+質問する: ChatGPT Gemini テンプレ:「このPython業務スクリプトを運用向けに堅牢化したい。失敗時設計も含めて提案して」 コピー 
+
+Zapier + n8n比較（導入速度と柔軟性のトレードオフ） 
+
+概要: Zapierは導入速度、n8nは分岐自由度と自己ホスト性が強み。 
+
+なぜ面白いか: 同じ自動化でも、運用主体に合わせて最適解が変わる。 
+
+現場での使いどころ: 非エンジニア主導のSaaS連携はZapier、開発主導の複雑処理はn8n。 
+
+ハマりどころ: 初期の楽さだけで選び、後で分岐やコスト制約に詰まる。 
+
+実務ポイント: 失敗時再試行・監査ログ・担当者変更フローまで設計する。 
+
+ミニ課題: 同一ワークフローを両方で作り、運用負荷を比較表にする。 
+
+公式リンク: Zapier apps / n8n docs。 
+
+参考: Zapier Apps / n8n Docs 
+
+質問する: ChatGPT Gemini テンプレ:「この業務はZapierとn8nどちら向き？運用・拡張・コストで比較して」 コピー 
+
+OpenClaw（定期運用を壊さない設計） 
+
+概要: cronは厳密時刻、heartbeatは巡回、sub-agentは重い処理に分離する。 
+
+なぜ面白いか: 自動化の責務分割で「静かな運用」と「必要時の即応」を両立できる。 
+
+現場での使いどころ: 日次レポート配信、障害通知、情報収集の定型化。 
+
+ハマりどころ: 通知を増やしすぎて、重要アラートが埋もれる。 
+
+実務ポイント: 通知文を短文化し、次アクションを1行で明記する。 
+
+ミニ課題: 1つの定期タスクをcron化し、失敗時の再送条件を定義。 
+
+公式リンク: OpenClaw docs / GitHub。 
+
+参考: OpenClaw Docs / OpenClaw GitHub 
+
+質問する: ChatGPT Gemini テンプレ:「OpenClawでこの定型業務を自動化したい。cron/heartbeat/sub-agentの設計を提案して」 コピー 
+
+SQL実践（DB設計・Index・EXPLAIN） 
+
+概要: ER設計→Index設計→EXPLAIN検証を1セットで回す。 
+
+なぜ面白いか: DBは正しく触ると桁違いに速くなる。 
+
+現場での使いどころ: 一覧API遅延、管理画面検索遅延、バッチ処理時間超過の改善。 
+
+ハマりどころ: 単一Index乱立でプランが安定せず、更新性能も落ちる。 
+
+実務ポイント: where + order byを見て複合Index順序を決める。 
+
+ミニ課題: 遅いSQL1本でEXPLAIN取得、Index追加後に再比較。 
+
+公式リンク: PostgreSQL EXPLAIN / MySQL EXPLAIN。 
+
+参考: PostgreSQL EXPLAIN / MySQL EXPLAIN 
+
+質問する: ChatGPT Gemini テンプレ:「このSQLのEXPLAIN結果から、Index改善案を優先順で提案して」 コピー 
+
+設計リファクタ（責務分離・命名・レビュー観点） 
+
+概要: 変更理由ごとに責務を分離し、命名で意図を読める状態を作る。 
+
+なぜ面白いか: 動くコードより「次に直せるコード」の価値が高いと実感できる。 
+
+現場での使いどころ: 肥大化したService/Controllerの分解、レビュー効率向上。 
+
+ハマりどころ: 抽象化しすぎて追跡不能な設計になる。 
+
+実務ポイント: レビュー時は「命名の一貫性」「副作用の位置」「境界テスト有無」を確認。 
+
+ミニ課題: 300行超メソッドを2分割し、責務コメントを削除できる命名へ変更。 
+
+公式リンク: Refactoring catalog / Clean Code principles。 
+
+参考: Refactoring Catalog / Code Smell 
+
+質問する: ChatGPT Gemini テンプレ:「このコードを責務分離したい。命名方針とレビュー観点付きで提案して」 コピー 
+
+監視・運用（Sentry・ログ設計・障害初動） 
+
+概要: エラー監視は「検知」だけでなく「初動の速さ」まで設計する。 
+
+なぜ面白いか: 同じ障害でも、初動品質で被害規模が大きく変わる。 
+
+現場での使いどころ: Sentry alert→Runbook→担当通知→暫定回避までを一本化。 
+
+ハマりどころ: 構造化ログなしで、障害時に検索不能。 
+
+実務ポイント: request_id/user_id/releaseを共通キーでログに残す。 
+
+ミニ課題: 主要API1本に構造化ログを追加し、Sentryイベントと相互参照可能にする。 
+
+公式リンク: Sentry docs / OpenTelemetry logs。 
+
+参考: Sentry Docs / OpenTelemetry Logs 
+
+質問する: ChatGPT Gemini テンプレ:「この障害ログ設計を見直したい。初動を速くするキー項目を提案して」 コピー 
+
+LLMアプリ設計（RAG・Tool Calling・Agent） 
+
+概要: RAGは知識補完、Tool Callingは外部実行、Agentは段取り制御として分離して考える。 
+
+なぜ面白いか: 失敗原因を層別化でき、改善サイクルが回しやすくなる。 
+
+現場での使いどころ: 社内FAQ、チケット分類、運用オペレーション自動化。 
+
+ハマりどころ: すべてをAgent化し、再現性とコストを失う。 
+
+実務ポイント: まずは固定ワークフロー + 必要最小のツール実行に寄せる。 
+
+ミニ課題: 1ユースケースをRAG単体で実装し、必要ならTool Callingを追加。 
+
+公式リンク: OpenAI cookbook / Anthropic tool use docs。 
+
+参考: Retrieval Guide / Tool Use Overview 
+
+質問する: ChatGPT Gemini テンプレ:「このLLM要件をRAG/Tool Calling/Agentに分解して最小実装案を作って」 コピー 
+
+プロンプト設計実務（評価・再現性） 
+
+概要: 良いプロンプトは文才より、評価可能な仕様化で作る。 
+
+なぜ面白いか: 出力品質を「再現できる形」で改善できる。 
+
+現場での使いどころ: 要約、分類、抽出など定型タスクの品質安定化。 
+
+ハマりどころ: 成功例だけ見て、失敗ケースを回収しない。 
+
+実務ポイント: 入力セット固定・評価観点固定・比較手順固定の3点セット。 
+
+ミニ課題: 10件の評価データを作り、プロンプトA/Bを同条件で比較。 
+
+公式リンク: Prompt engineering guide / Evals docs。 
+
+参考: Prompt Engineering / Evals 
+
+質問する: ChatGPT Gemini テンプレ:「このプロンプトの再現性を高めたい。評価設計込みで改善して」 コピー 
+
+AIコスト最適化（トークン・キャッシュ・モデル選定） 
+
+概要: コストは「入力削減」「キャッシュ」「モデル階層化」の3軸で下げる。 
+
+なぜ面白いか: 品質を落とさずに運用継続性を高められる。 
+
+現場での使いどころ: チャット運用、要約バッチ、RAG APIのランニングコスト圧縮。 
+
+ハマりどころ: 高性能モデル固定で、簡単タスクにも高コストを払う。 
+
+実務ポイント: ルーティング戦略（軽量→失敗時のみ上位）を入れる。 
+
+ミニ課題: 直近ログから上位3ユースケースのトークン消費を可視化。 
+
+公式リンク: pricing / caching guidance。 
+
+参考: Pricing / Latency & Cost Optimization 
+
+質問する: ChatGPT Gemini テンプレ:「このAI機能のコストを下げたい。品質を維持する最適化順序を提案して」 コピー 
+
+AI安全性（PII・権限・プロンプトインジェクション対策） 
+
+概要: 入力検証・権限境界・出力フィルタを多層で設計する。 
+
+なぜ面白いか: 「便利さ」と「事故防止」を両立する設計力がつく。 
+
+現場での使いどころ: 社内データ検索、顧客対応支援、自動実行系ツール。 
+
+ハマりどころ: プロンプト文だけで防御し、実行レイヤーの制御を忘れる。 
+
+実務ポイント: PIIマスキング、allowlist型ツール実行、監査ログ保存を標準化。 
+
+ミニ課題: 1フローで「危険入力例」を作り、遮断・縮退動作をテスト。 
+
+公式リンク: OWASP LLM Top 10 / NIST AI RMF。 
+
+参考: OWASP LLM Top 10 / NIST AI RMF 
+
+質問する: ChatGPT Gemini テンプレ:「このAI機能の安全設計レビューをして。PII・権限・注入対策の不足点を洗って」 コピー 
+
+AI×開発生産性（PR要約・テスト生成・障害一次切り分け） 
+
+概要: AIは「人の判断を速くする補助線」として使うと成功しやすい。 
+
+なぜ面白いか: レビュー待ち・障害調査の滞留時間を現実的に削減できる。 
+
+現場での使いどころ: PR差分要約、回帰テスト候補抽出、ログから一次仮説生成。 
+
+ハマりどころ: 生成結果を鵜呑みにして、検証コストが逆に増える。 
+
+実務ポイント: 出力フォーマットを固定し、必ず根拠リンクを付ける。 
+
+ミニ課題: 直近PR1本でAI要約→人レビュー比較を行い、差分を記録。 
+
+公式リンク: GitHub Copilot docs / incident response best practices。 
+
+参考: GitHub Copilot / Incident Response 
+
+質問する: ChatGPT Gemini テンプレ:「このPR/障害ログを要約して、次アクションを優先度付きで提案して」 コピー 
+
+今日の深掘り候補 
+
+「Laravel集計API高速化: Eloquent設計 + EXPLAIN + 複合Indexを45分で検証」 
+async function copyToClipboard(text, btn) {
+ try {
+ await navigator.clipboard.writeText(text.trim());
+ const originalText = btn.innerText;
+ btn.innerText = '✅ コピー完了';
+ setTimeout(() => { btn.innerText = originalText; }, 2000);
+ } catch (err) { console.error('コピー失敗', err); }
+ }
+
+ document.querySelectorAll('details').forEach(details => {
+ const askArea = details.querySelector('.ask');
+ const summaryText = details.querySelector('summary span')?.innerText || details.querySelector('summary').innerText.replace(/📋.*/, '');
+ const btnContainer = document.createElement('div');
+ btnContainer.className = 'topic-tools';
+
+ const copyContentBtn = document.createElement('button');
+ copyContentBtn.innerText = 'トピック内容をコピー';
+ copyContentBtn.className = 'tool-btn';
+ copyContentBtn.style.width = '100%';
+ copyContentBtn.addEventListener('click', () => {
+ const clone = details.cloneNode(true);
+ clone.querySelectorAll('button, .ask, summary, p').forEach(el => el.remove());
+ const text = `【${summaryText.trim()}】\n\n${clone.innerText.trim()}`;
+ copyToClipboard(text, copyContentBtn);
+ });
+
+ const copyRefBtn = document.createElement('button');
+ copyRefBtn.innerText = '参照リンクをコピー';
+ copyRefBtn.className = 'tool-btn';
+ copyRefBtn.addEventListener('click', () => {
+ const links = Array.from(details.querySelectorAll('p a')).map(a => a.href).join('\n');
+ const text = `【${summaryText.trim()}】\n${links}`;
+ copyToClipboard(text, copyRefBtn);
+ });
+
+ const copyTaskBtn = document.createElement('button');
+ copyTaskBtn.innerText = '演習依頼文をコピー';
+ copyTaskBtn.className = 'tool-btn primary';
+ copyTaskBtn.addEventListener('click', () => {
+ const taskText = Array.from(details.querySelectorAll('li')).find(li => li.innerText.includes('課題'))?.innerText || 'このトピックの実践課題';
+ const text = `以下の課題について、やってください。\n\n【対象】${summaryText.trim()}\n【課題】${taskText.trim()}`;
+ copyToClipboard(text, copyTaskBtn);
+ });
+
+ btnContainer.append(copyContentBtn, copyRefBtn, copyTaskBtn);
+ if (askArea) askArea.parentNode.insertBefore(btnContainer, askArea);
+ });
+
+ document.querySelectorAll('.ask .copy-btn').forEach(btn => {
+ btn.addEventListener('click', () => copyToClipboard(btn.dataset.copy, btn));
+ });
+
+ // hamburger menu + archive links
+ const owner = 'NewstandardOpenclaw';
+ const repo = 'daily-dev-tips';
+ const path = 'daily';
+ const branch = 'main';
+ const api = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
+ const linksEl = document.getElementById('links');
+ const isTarget = (name) => name.endsWith('.html') && name !== 'index.html' && name !== 'template.html';
+
+ fetch(api)
+ .then((res) => { if (!res.ok) throw new Error(`GitHub API error: ${res.status}`); return res.json(); })
+ .then((items) => {
+ const names = items.filter((x) => x.type === 'file').map((x) => x.name).filter(isTarget).sort((a,b)=>{
+ if (a === 'latest.html') return -1;
+ if (b === 'latest.html') return 1;
+ return b.localeCompare(a);
+ });
+ linksEl.innerHTML = names.length
+ ? names.map((name) => `<a href="../../${name}" target="_blank" rel="noopener noreferrer">${name}</a>`).join('')
+ : '<span class="muted">リンクが見つかりません。</span>';
+ })
+ .catch(() => { linksEl.innerHTML = '<span class="muted">取得に失敗しました。再読み込みしてください。</span>'; });
+
+ const drawerEl = document.getElementById('drawer');
+ const overlay = document.getElementById('overlay');
+ const openMenu = document.getElementById('openMenu');
+ const closeMenu = document.getElementById('closeMenu');
+ const open = () => { drawerEl.classList.add('show'); overlay.classList.add('show'); drawerEl.setAttribute('aria-hidden', 'false'); };
+ const close = () => { drawerEl.classList.remove('show'); overlay.classList.remove('show'); drawerEl.setAttribute('aria-hidden', 'true'); };
+ openMenu?.addEventListener('click', open);
+ closeMenu?.addEventListener('click', close);
+ overlay?.addEventListener('click', close);
+ window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
