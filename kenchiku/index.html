@@ -3,58 +3,142 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>建築士向け 受注導線テンプレ</title>
+  <title>〇〇地域の建築設計・リノベ相談 | 建築士が伴走</title>
+  <meta name="description" content="〇〇地域で新築・リノベ・店舗改修の相談を受付中。課題整理から設計、施工前後の伴走まで建築士がサポートします。" />
   <style>
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;max-width:860px;margin:32px auto;padding:0 16px;line-height:1.7;color:#1f2937}
-    h1,h2,h3{line-height:1.3}
-    .cta{display:inline-block;padding:10px 14px;border:1px solid #cbd5e1;border-radius:10px;text-decoration:none}
-    section{margin:24px 0}
+    :root{
+      --bg:#f8fafc; --text:#0f172a; --muted:#475569; --line:#e2e8f0; --brand:#0f766e; --brand2:#0d9488;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;line-height:1.7}
+    .wrap{max-width:980px;margin:0 auto;padding:0 16px}
+    header{padding:56px 0 28px;background:linear-gradient(180deg,#ecfeff,#f8fafc)}
+    h1,h2,h3{line-height:1.3;margin:0 0 12px}
+    h1{font-size:clamp(1.6rem,3vw,2.3rem)}
+    h2{font-size:1.45rem;margin-top:26px}
+    p{margin:0 0 12px}
+    .sub{color:var(--muted)}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+    .grid{display:grid;gap:14px}
+    .grid-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+    .grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .btn{display:inline-block;padding:11px 16px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid transparent}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-primary:hover{background:var(--brand2)}
+    .btn-ghost{border-color:#cbd5e1;color:#0f172a;background:#fff}
+    section{padding:18px 0}
+    ul{padding-left:1.1rem;margin:8px 0}
+    .kpi{font-weight:700;font-size:1.2rem}
+    .flow li{margin-bottom:6px}
+    .faq details{margin:8px 0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+    .faq summary{cursor:pointer;font-weight:700}
+    .note{font-size:.92rem;color:#64748b}
+    .sticky-cta{position:sticky;bottom:8px;z-index:20}
+    footer{padding:28px 0 48px;color:#64748b;font-size:.92rem}
   </style>
 </head>
 <body>
-  <h1>建築士向け 受注導線テンプレ</h1>
-  <p>紹介頼みだけでなく、Web経由で相談を安定獲得するための最小構成です。</p>
+  <header>
+    <div class="wrap">
+      <p class="sub">〇〇地域対応 / 新築・リノベ・店舗改修</p>
+      <h1>建築士が、<br>「何から始めるべきか分からない」を解決します。</h1>
+      <p class="sub">ご要望の整理から、プラン提案、施工前後の調整まで。住まい・店舗づくりを伴走サポートします。</p>
+      <div class="btns">
+        <a class="btn btn-primary" href="#contact">無料相談（30分）を予約する</a>
+        <a class="btn btn-ghost" href="#works">実績を見る</a>
+      </div>
+      <p class="note">※ 押し売り営業は行いません。相談のみでも歓迎です。</p>
+    </div>
+  </header>
 
-  <section>
-    <h2>1. 受注導線（最小）</h2>
-    <ul>
-      <li>問い合わせ窓口を1つに統一（LINE or フォーム）</li>
-      <li>1ページLPを公開</li>
-      <li>実績3件を「課題→提案→結果」で掲載</li>
-      <li>無料相談CTAを1つ置く</li>
-    </ul>
-  </section>
+  <main class="wrap">
+    <section>
+      <h2>提供できること</h2>
+      <div class="grid grid-3">
+        <article class="card">
+          <h3>設計・プランニング</h3>
+          <p>暮らし方・事業動線に合わせた、無理のない設計をご提案します。</p>
+        </article>
+        <article class="card">
+          <h3>改修・リノベ提案</h3>
+          <p>既存建物の制約を活かし、予算に合わせた優先順位付きで提案します。</p>
+        </article>
+        <article class="card">
+          <h3>伴走サポート</h3>
+          <p>要件整理、図面調整、関係者連携まで。プロジェクトを前に進めます。</p>
+        </article>
+      </div>
+    </section>
 
-  <section>
-    <h2>2. LPヒーロー文（サンプル）</h2>
-    <p><strong>〇〇地域の住まい・店舗づくりを、建築士が伴走して設計します。</strong></p>
-    <p>新築・リノベーション・改修まで、「何から始めるべきか分からない」段階からご相談いただけます。</p>
-    <a class="cta" href="#">無料相談する</a>
-  </section>
+    <section id="works">
+      <h2>実績（課題 → 提案 → 結果）</h2>
+      <div class="grid grid-2">
+        <article class="card">
+          <h3>戸建てリノベ（〇〇市）</h3>
+          <p><strong>課題:</strong> 収納不足と家事動線の悪さ</p>
+          <p><strong>提案:</strong> 回遊動線化 + 造作収納</p>
+          <p><strong>結果:</strong> 日常の移動ストレスが減り、家事時間を短縮</p>
+        </article>
+        <article class="card">
+          <h3>店舗改修（〇〇市）</h3>
+          <p><strong>課題:</strong> 席効率が悪くピーク時の運用が不安定</p>
+          <p><strong>提案:</strong> 座席レイアウト再設計 + 導線改善</p>
+          <p><strong>結果:</strong> ピーク帯オペレーションが安定</p>
+        </article>
+        <article class="card">
+          <h3>中古住宅改修（〇〇市）</h3>
+          <p><strong>課題:</strong> 購入前に改修費の見通しが立たない</p>
+          <p><strong>提案:</strong> 優先順位付き改修計画 + 概算費用提示</p>
+          <p><strong>結果:</strong> 予算内で段階的な改修を実現</p>
+        </article>
+        <article class="card">
+          <h3>数値でみる（例）</h3>
+          <p class="kpi">初回相談満足度 4.8/5</p>
+          <p class="kpi">概算提案まで平均 7日</p>
+          <p class="note">※ 実績値に差し替えて運用してください</p>
+        </article>
+      </div>
+    </section>
 
-  <section>
-    <h2>3. 実績の書き方（テンプレ）</h2>
-    <ul>
-      <li>依頼前の悩み</li>
-      <li>提案内容</li>
-      <li>結果（どう変わったか）</li>
-    </ul>
-  </section>
+    <section>
+      <h2>ご相談の流れ</h2>
+      <ol class="flow card">
+        <li>お問い合わせ（LINE / フォーム）</li>
+        <li>30分ヒアリング（オンライン or 電話）</li>
+        <li>現地確認・要件整理</li>
+        <li>プランと概算提示</li>
+        <li>ご契約後、詳細設計へ</li>
+      </ol>
+    </section>
 
-  <section>
-    <h2>4. 問い合わせ項目（最小）</h2>
-    <ul>
-      <li>お名前</li>
-      <li>連絡先</li>
-      <li>相談内容</li>
-      <li>予算感（任意）</li>
-      <li>希望時期（任意）</li>
-    </ul>
-  </section>
+    <section class="faq">
+      <h2>よくある質問</h2>
+      <details><summary>相談だけでも可能ですか？</summary><p>可能です。方向性整理のみでも歓迎です。</p></details>
+      <details><summary>予算が未確定でも大丈夫ですか？</summary><p>問題ありません。優先順位をつけた段階提案が可能です。</p></details>
+      <details><summary>対応エリアは？</summary><p>〇〇地域中心です。詳細はご相談ください。</p></details>
+      <details><summary>工事会社の紹介はできますか？</summary><p>ご要望に応じて候補をご案内します。</p></details>
+    </section>
 
-  <section>
-    <h2>5. 詳細テンプレ</h2>
-    <p>詳細版（Markdown）: <a href="./lead-funnel-lp-template.md">lead-funnel-lp-template.md</a></p>
-  </section>
+    <section id="contact" class="card">
+      <h2>無料相談（30分）</h2>
+      <p>「何から始めればよいか分からない」段階でも大丈夫です。まずは現状と希望をお聞かせください。</p>
+      <div class="btns">
+        <a class="btn btn-primary" href="#">LINEで相談する</a>
+        <a class="btn btn-ghost" href="#">フォームで相談する</a>
+      </div>
+      <p class="note">連絡項目（推奨）: お名前 / 連絡先 / 相談内容 / 予算感（任意）/ 希望時期（任意）</p>
+    </section>
+
+    <div class="sticky-cta wrap">
+      <div class="btns" style="justify-content:flex-end; margin-top:18px;">
+        <a class="btn btn-primary" href="#contact">無料相談する</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="wrap">
+    <p>© 建築士オフィス（仮）</p>
+  </footer>
 </body>
 </html>
