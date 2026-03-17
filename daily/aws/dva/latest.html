@@ -1,0 +1,39 @@
+<!doctype html><html lang="ja"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AWS DVA インプットデイリー</title><style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.7;margin:24px;color:#1f2937}details{border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px;margin:12px 0;background:#fafafa}summary{font-weight:700;cursor:pointer}.ask{margin-top:10px;padding-top:8px;border-top:1px dashed #d1d5db;font-size:.95rem}.copy-btn{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer}.topic-tools{display:flex;flex-direction:column;gap:8px;margin:12px 0}.tool-btn{border:1px solid #d1d5db;background:#fff;border-radius:10px;padding:8px 10px;cursor:pointer;text-align:left}.tool-btn.primary{background:#f0f9ff}
+</style></head><body>
+<h1>AWS Certified Developer - Associate（DVA）毎日インプット</h1>
+<p><strong>日付:</strong> 2026-03-18 (JST)</p>
+<p>形式: <strong>定義 / 重要性 / 使い分け / 誤解 / 3分要点</strong></p>
+<section id="t1"><details open><summary>Lambda の同時実行制御（Reserved vs Provisioned Concurrency）</summary>
+<ul><li><strong>定義:</strong> Reservedは関数ごとの上限・下限枠、Provisionedは事前ウォームした実行環境の確保。</li><li><strong>重要性:</strong> DVAでは「スロットリング回避」「コールドスタート最適化」の両面で頻出。</li><li><strong>使い分け:</strong> バースト抑制と隔離はReserved、低遅延APIはProvisioned。併用も可。</li><li><strong>誤解:</strong> Reservedを増やせば自動で低遅延になる、は誤り（低遅延はProvisioned側）。</li><li><strong>3分要点:</strong> <em>制限管理=Reserved、体感速度=Provisioned</em> と覚える。</li></ul>
+<p>参考: <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html" target="_blank" rel="noopener noreferrer">AWS Lambda Concurrency</a></p>
+<div class="ask">質問テンプレ: 「Lambda同時実行制御を、試験での出題意図ベースで説明して」 <button class="copy-btn" data-copy="Lambda同時実行制御を、試験での出題意図ベースで説明して">コピー</button></div></details></section>
+<section id="t2"><details><summary>DynamoDB 読み込み整合性（Eventually vs Strongly Consistent）</summary>
+<ul><li><strong>定義:</strong> Eventuallyは結果整合、Stronglyは直前書き込みを反映した読み込み。</li><li><strong>重要性:</strong> 正確性とコストのトレードオフ問題としてDVAで非常に出やすい。</li><li><strong>使い分け:</strong> 表示系はEventually、更新直後の検証や在庫確認はStronglyを検討。</li><li><strong>誤解:</strong> GSIでもStrongly Consistent Readできる、は誤り（GSIはEventuallyのみ）。</li><li><strong>3分要点:</strong> <em>整合性を上げるとコストとレイテンシも上がる</em> を前提に設計する。</li></ul>
+<p>参考: <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html" target="_blank" rel="noopener noreferrer">DynamoDB Read Consistency</a></p>
+<div class="ask">質問テンプレ: 「DynamoDB整合性の使い分けを、業務シナリオ付きで3例」 <button class="copy-btn" data-copy="DynamoDB整合性の使い分けを、業務シナリオ付きで3例">コピー</button></div></details></section>
+<section id="t3"><details><summary>API Gateway のキャッシュとスロットリング</summary>
+<ul><li><strong>定義:</strong> キャッシュはバックエンド負荷軽減、スロットリングは過負荷防止のレート制御。</li><li><strong>重要性:</strong> コスト最適化と可用性維持を同時に問う設問で使われる。</li><li><strong>使い分け:</strong> 読み取り中心APIはキャッシュ、悪意/突発アクセス対策はUsage Plan + Throttle。</li><li><strong>誤解:</strong> キャッシュ有効化だけで常に高速化、は誤り（TTL設計とヒット率次第）。</li><li><strong>3分要点:</strong> <em>速くする機能と守る機能は別</em>。両輪で設計する。</li></ul>
+<p>参考: <a href="https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html" target="_blank" rel="noopener noreferrer">API Gateway Caching</a></p>
+<div class="ask">質問テンプレ: 「API Gatewayで性能と保護を両立する設計案を出して」 <button class="copy-btn" data-copy="API Gatewayで性能と保護を両立する設計案を出して">コピー</button></div></details></section>
+<section id="t4"><details><summary>SQS 可視性タイムアウトとDLQの設計</summary>
+<ul><li><strong>定義:</strong> 可視性タイムアウトは再処理までの待機時間、DLQは失敗メッセージ退避先。</li><li><strong>重要性:</strong> 重複処理や取りこぼしを防ぐ中核設定で、運用トラブル系の問題で頻出。</li><li><strong>使い分け:</strong> 処理時間より少し長めの可視性、maxReceiveCountは暫定障害回復回数で決める。</li><li><strong>誤解:</strong> 可視性を極端に長くすれば安全、は誤り（障害時の復旧が遅れる）。</li><li><strong>3分要点:</strong> <em>処理時間分布に合わせて可視性を調整し、DLQで観測可能にする</em>。</li></ul>
+<p>参考: <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html" target="_blank" rel="noopener noreferrer">SQS DLQ</a></p>
+<div class="ask">質問テンプレ: 「SQSの可視性タイムアウト設計を、実運用目線でレビューして」 <button class="copy-btn" data-copy="SQSの可視性タイムアウト設計を、実運用目線でレビューして">コピー</button></div></details></section>
+<section id="t5"><details><summary>CodeDeploy のデプロイ方式（In-Place vs Blue/Green）</summary>
+<ul><li><strong>定義:</strong> In-Placeは既存環境へ順次更新、Blue/Greenは新旧環境を並行して切替。</li><li><strong>重要性:</strong> 可用性要件・ロールバック戦略の判断問題としてDVAで定番。</li><li><strong>使い分け:</strong> コスト重視はIn-Place、停止最小化と安全切替はBlue/Green。</li><li><strong>誤解:</strong> Blue/Greenは常に高コストで無意味、は誤り（障害時損失低減で逆転する）。</li><li><strong>3分要点:</strong> <em>失敗時の戻しやすさ</em> を評価軸に選択する。</li></ul>
+<p>参考: <a href="https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-steps.html" target="_blank" rel="noopener noreferrer">CodeDeploy Deployment Types</a></p>
+<div class="ask">質問テンプレ: 「CodeDeploy方式選定を、試験問題風に比較して」 <button class="copy-btn" data-copy="CodeDeploy方式選定を、試験問題風に比較して">コピー</button></div></details></section>
+<script>
+async function cpy(text,btn){try{await navigator.clipboard.writeText((text||'').trim());const t=btn.textContent;btn.textContent='コピー済み';setTimeout(function(){btn.textContent=t;},1200);}catch(e){console.error(e);}}
+document.querySelectorAll('details').forEach(function(details){
+  var ask=details.querySelector('.ask'); if(!ask) return; var summary=(details.querySelector('summary')||{innerText:'トピック'}).innerText.trim();
+  var box=document.createElement('div'); box.className='topic-tools';
+  var b1=document.createElement('button'); b1.className='tool-btn'; b1.textContent='トピックの内容をコピー'; b1.onclick=function(){var clone=details.cloneNode(true); clone.querySelectorAll('button,.ask,summary').forEach(function(el){el.remove();}); cpy('【'+summary+'】\n\n'+clone.innerText.trim(), b1);};
+  var b2=document.createElement('button'); b2.className='tool-btn'; b2.textContent='参照リンクをコピー'; b2.onclick=function(){var links=Array.from(details.querySelectorAll('a[href]')).map(function(a){return a.href;}).join('\n'); cpy('【'+summary+'】\n'+links,b2);};
+  var b3=document.createElement('button'); b3.className='tool-btn primary'; b3.textContent='実践課題のサポートを依頼'; b3.onclick=function(){cpy('AWS DVA学習サポートをお願いします。\n対象トピック: '+summary+'\n希望: 出題観点3つ、ひっかけポイント2つ、確認クイズ3問。',b3);};
+  box.append(b1,b2,b3); ask.parentNode.insertBefore(box,ask);
+});
+document.querySelectorAll('.ask .copy-btn').forEach(function(btn){btn.onclick=function(){cpy(btn.dataset.copy||'',btn);}});
+</script></body></html>
